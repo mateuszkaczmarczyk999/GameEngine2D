@@ -1,0 +1,40 @@
+# Ignore object files, binaries, and debug files
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dylib
+*.dll
+*.lib
+*.lo
+
+# Ignore dependency files (if you use Makefile-generated dependencies)
+*.d
+libs/
+
+# Ignore compiled binaries (executables)
+bin/
+build/
+
+# Ignore core dumps
+core
+
+# Ignore temporary files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.log
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.code-workspace
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore generated Makefiles
+Makefile~
