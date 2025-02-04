@@ -14,7 +14,8 @@ INCLUDE_PATHS = -I"./libs" \
 
 SOURCE = src/*.cpp \
 		 src/Game/*.cpp \
-		 src/Logger/*.cpp
+		 src/Logger/*.cpp \
+		 src/ECS/*.cpp
 
 LINKER_FLAGS = -lSDL2 \
 			   -lSDL2_image \
