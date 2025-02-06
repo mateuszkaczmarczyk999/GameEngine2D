@@ -2,6 +2,7 @@
 #define GAME_HPP
 
 #include <SDL2/SDL.h>
+#include "../ECS/ECS.hpp"
 
 const int FPS = 60; 
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -29,6 +30,8 @@ class Game
         bool isRunning;
         SDL_Window* window;
         SDL_Renderer* renderer;
+
+        Registry* registry;
 };
 
 #endif

@@ -6,6 +6,8 @@
 
 Game::Game()
 {
+    isRunning = false;
+    registry = new Registry();
     Logger::Log("Game class created.");
 }
 
@@ -73,7 +75,9 @@ glm::vec2 playerVelocity;
 void Game::Setup()
 {
     playerPosition = glm::vec2(10.0, 20.0);
-    playerVelocity = glm::vec2(100.0, 25.0);;
+    playerVelocity = glm::vec2(100.0, 25.0);
+
+    Entity tank = registry->CreateEntity();
 }
 
 void Game::ProcessInput()

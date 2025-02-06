@@ -37,6 +37,11 @@ Entity Registry::CreateEntity()
     Entity entity(entityId);
     entitiesToBeAdded.insert(entityId);
 
+    if (entityId >= entityComponentSignatures.size()) 
+    {
+        entityComponentSignatures.resize(entityId + 1);
+    }
+
     Logger::Log("Entity created with id: " + std::to_string(entityId));
 
     return entity;
@@ -52,6 +57,7 @@ void Registry::AddEntityToSystems(Entity entity)
         System* system = pair.second;
         const Signature& systemComponentSignature = system->GetComponentSignature();
         bool isInterested = (systemComponentSignature & entityComponentSignature) == systemComponentSignature;
+
         if (isInterested)
         {
             system->AddEntityToSystem(entity);
@@ -61,6 +67,10 @@ void Registry::AddEntityToSystems(Entity entity)
 
 void Registry::Update()
 {
-    //TODO Add entities in waitlist
+    for (auto entity: entitiesToBeAdded)
+    {
+        AddEntityToSystems(entity);
+    }
+    entitiesToBeAdded.clear();
     //TODO Kill entities in waitlist
 }
