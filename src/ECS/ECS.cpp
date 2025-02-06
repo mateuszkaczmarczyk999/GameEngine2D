@@ -1,4 +1,7 @@
 #include "ECS.hpp"
+#include "../Logger/Logger.hpp"
+
+int IComponent::nextId = 0;
 
 int Entity::GetId() const
 {
@@ -25,4 +28,39 @@ std::vector<Entity> System::GetSystemEntities() const
 const Signature& System::GetComponentSignature() const
 {
     return componentSignature;
+}
+
+Entity Registry::CreateEntity()
+{
+    int entityId;
+    entityId = countEntitis++;
+    Entity entity(entityId);
+    entitiesToBeAdded.insert(entityId);
+
+    Logger::Log("Entity created with id: " + std::to_string(entityId));
+
+    return entity;
+}
+
+void Registry::AddEntityToSystems(Entity entity)
+{
+    const auto entityId = entity.GetId();
+    const Signature& entityComponentSignature = entityComponentSignatures[entityId];
+
+    for (auto& pair: systems)
+    {
+        System* system = pair.second;
+        const Signature& systemComponentSignature = system->GetComponentSignature();
+        bool isInterested = (systemComponentSignature & entityComponentSignature) == systemComponentSignature;
+        if (isInterested)
+        {
+            system->AddEntityToSystem(entity);
+        }
+    }
+}
+
+void Registry::Update()
+{
+    //TODO Add entities in waitlist
+    //TODO Kill entities in waitlist
 }
