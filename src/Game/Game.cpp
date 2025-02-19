@@ -7,7 +7,7 @@
 Game::Game()
 {
     isRunning = false;
-    registry = new Registry();
+    registry = std::make_unique<Registry>();
     Logger::Log("Game class created.");
 }
 

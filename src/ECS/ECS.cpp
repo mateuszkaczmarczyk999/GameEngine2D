@@ -54,7 +54,7 @@ void Registry::AddEntityToSystems(Entity entity)
 
     for (auto& pair: systems)
     {
-        System* system = pair.second;
+        std::shared_ptr<System> system = pair.second;
         const Signature& systemComponentSignature = system->GetComponentSignature();
         bool isInterested = (systemComponentSignature & entityComponentSignature) == systemComponentSignature;
 
