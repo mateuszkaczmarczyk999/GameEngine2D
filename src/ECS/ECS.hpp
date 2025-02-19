@@ -42,11 +42,12 @@ struct IComponent
 template <typename TComponent>
 class Component: public IComponent
 {
-    static int GetId()
-    {
-        static auto id = nextId++;
-        return id;
-    }
+    public:
+        static int GetId()
+        {
+            static auto id = nextId++;
+            return id;
+        }
 };
 
 class System
@@ -146,7 +147,7 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 
     if (!componentPools[compnentId])
     {
-        std::shared_ptr<Pool<T>> newComponentPool = std::make_shared<Pool<T>>();
+        std::shared_ptr<Pool<T>> newComponentPool = std::make_shared<Pool<T>>(1);
         componentPools[compnentId] = newComponentPool;
     }
 
@@ -160,6 +161,8 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
     T newComponent(std::forward<TArgs>(args)...);
     componentPool->Set(entityId, newComponent);
     entityComponentSignatures[entityId].set(compnentId);
+
+    Logger::Log("Component Id: " + std::to_string(compnentId) + " was added to Entity with id: " + std::to_string(entityId));
 };
 
 template <typename T>
