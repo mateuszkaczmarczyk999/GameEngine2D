@@ -80,8 +80,9 @@ void Game::Setup()
     playerVelocity = glm::vec2(100.0, 25.0);
 
     Entity tank = registry->CreateEntity();
-    registry->AddComponent<TransformComponent>(tank, glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
-    registry->AddComponent<RigidBodyComponent>(tank, glm::vec2(10.0, 10.0));
+    tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
+    tank.RemoveComponent<RigidBodyComponent>();
 }
 
 void Game::ProcessInput()
