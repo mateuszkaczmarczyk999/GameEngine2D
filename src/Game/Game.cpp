@@ -14,6 +14,7 @@ Game::Game()
 {
     isRunning = false;
     registry = std::make_unique<Registry>();
+    assetStore = std::make_unique<AssetStore>();
     Logger::Log("Game class created.");
 }
 
@@ -80,6 +81,9 @@ glm::vec2 playerVelocity;
 
 void Game::Setup()
 {
+    assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
+    assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
+
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
 
@@ -87,13 +91,13 @@ void Game::Setup()
 
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>(10, 10);
+    tank.AddComponent<SpriteComponent>("tank-tiger-right", 10, 10);
 
     Entity tank2 = registry->CreateEntity();
 
     tank2.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank2.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
-    tank2.AddComponent<SpriteComponent>(10, 50);
+    tank2.AddComponent<SpriteComponent>("truck-ford-left", 10, 50);
 }
 
 void Game::ProcessInput()
@@ -133,19 +137,6 @@ void Game::Render()
 {
     SDL_SetRenderDrawColor(renderer, 36, 10, 10, 255);
     SDL_RenderClear(renderer);
-
-    // SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
-    // SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    // SDL_FreeSurface(surface);
-
-    // SDL_Rect dstRect = { 
-    //     static_cast<int>(playerPosition.x),
-    //     static_cast<int>(playerPosition.y),
-    //     32,
-    //     32
-    // };
-    // SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-    // SDL_DestroyTexture(texture);
 
     registry->GetSystem<RenderSystem>().Update(renderer);
 

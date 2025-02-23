@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "../ECS/ECS.hpp"
+#include "../AssetStore/AssetStore.hpp"
 
 const int FPS = 60; 
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -32,6 +33,7 @@ class Game
         SDL_Renderer* renderer;
 
         std::unique_ptr<Registry> registry;
+        std::unique_ptr<AssetStore> assetStore;
 };
 
 #endif
