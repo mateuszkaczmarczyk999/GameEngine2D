@@ -32,6 +32,7 @@ class Entity
         template <typename T> void RemoveComponent();
         template <typename T> bool HasComponent() const;
         template <typename T> T& GetComponent() const;
+
         class Registry* registry;
 
     private:
@@ -66,7 +67,7 @@ class System
         std::vector<Entity> GetSystemEntities() const;
 
         // Defines the component tyoe that entitiies must have to be considered by the system
-        template <typename TComponent> void DefineComponent();
+        template <typename TComponent> void RequireComponent();
 
     private:
         Signature componentSignature;
@@ -74,7 +75,7 @@ class System
 };
 
 template <typename TComponent>
-void System::DefineComponent()
+void System::RequireComponent()
 {
     const auto componentId = Component<TComponent>::GetId();
     componentSignature.set(componentId);
@@ -98,7 +99,7 @@ class Pool: public IPool
         void Clear() { data.clear(); }
         void Add(T object) { data.push_back(object); }
         void Set(int idx, T object) { data[idx] = object; }
-        T& Get(int idx) { return static_cast<T>(data[idx]); }
+        T& Get(int idx) { return static_cast<T&>(data[idx]); }
         T& operator [](unsigned int idx) { return static_cast<T>(data[idx]); }
 
     private:
@@ -117,10 +118,10 @@ class Registry
         void Update();
         Entity CreateEntity();
 
-        template <typename T, typename ...TArgs> void AddComponent(Entity& entity, TArgs&& ...args);
-        template <typename T> void RemoveComponent(Entity& entity);
-        template <typename T> bool HasComponent(Entity& entity) const;
-        template <typename T> T& GetComponent(Entity& entity) const;
+        template <typename T, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
+        template <typename T> void RemoveComponent(Entity entity);
+        template <typename T> bool HasComponent(Entity entity) const;
+        template <typename T> T& GetComponent(Entity entity) const;
 
         template <typename T, typename ...TArgs> void AddSystem(TArgs&& ...args);
         template <typename T> void RemoveSystem();
@@ -140,7 +141,7 @@ class Registry
 };
 
 template <typename T, typename ...TArgs>
-void Registry::AddComponent(Entity& entity, TArgs&& ...args)
+void Registry::AddComponent(Entity entity, TArgs&& ...args)
 {
     const auto componentId = Component<T>::GetId();
     const auto entityId = entity.GetId();
@@ -171,7 +172,7 @@ void Registry::AddComponent(Entity& entity, TArgs&& ...args)
 };
 
 template <typename T>
-void Registry::RemoveComponent(Entity& entity)
+void Registry::RemoveComponent(Entity entity)
 {
     const auto componentId = Component<T>::GetId();
     const auto entityId = entity.GetId();
@@ -182,7 +183,7 @@ void Registry::RemoveComponent(Entity& entity)
 }
 
 template <typename T>
-bool Registry::HasComponent(Entity& entity) const
+bool Registry::HasComponent(Entity entity) const
 {
     const auto componentId = Component<T>::GetId();
     const auto entityId = entity.GetId();
@@ -191,7 +192,7 @@ bool Registry::HasComponent(Entity& entity) const
 }
 
 template <typename T>
-T& Registry::GetComponent(Entity& entity) const
+T& Registry::GetComponent(Entity entity) const
 {
     const auto componentId = Component<T>::GetId();
     const auto entityId = entity.GetId();

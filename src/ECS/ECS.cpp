@@ -34,15 +34,16 @@ Entity Registry::CreateEntity()
 {
     int entityId;
     entityId = countEntitis++;
+
     Entity entity(entityId);
-    entitiesToBeAdded.insert(entityId);
+    entity.registry = this;
+
+    entitiesToBeAdded.insert(entity);
 
     if (entityId >= entityComponentSignatures.size()) 
     {
         entityComponentSignatures.resize(entityId + 1);
     }
-
-    entity.registry = this;
 
     Logger::Log("Entity created with id: " + std::to_string(entityId));
 

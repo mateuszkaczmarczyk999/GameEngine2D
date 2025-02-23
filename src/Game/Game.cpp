@@ -2,6 +2,7 @@
 #include "../Logger/Logger.hpp"
 #include "../Components/Transform.hpp"
 #include "../Components/RigidBody.hpp"
+#include "../Systems/Movement.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
@@ -76,13 +77,12 @@ glm::vec2 playerVelocity;
 
 void Game::Setup()
 {
-    playerPosition = glm::vec2(10.0, 20.0);
-    playerVelocity = glm::vec2(100.0, 25.0);
+    registry->AddSystem<Movement>();
 
     Entity tank = registry->CreateEntity();
+
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
-    tank.RemoveComponent<RigidBodyComponent>();
 }
 
 void Game::ProcessInput()
@@ -114,8 +114,8 @@ void Game::Update()
 
     pravFrameTimestamp = SDL_GetTicks();
 
-    playerPosition.x += playerVelocity.x * deltaTime;
-    playerPosition.y += playerVelocity.y * deltaTime;
+    registry->Update();
+    registry->GetSystem<Movement>().Update(deltaTime);
 }
 
 void Game::Render()
