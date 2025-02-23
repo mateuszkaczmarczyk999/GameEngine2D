@@ -2,7 +2,10 @@
 #include "../Logger/Logger.hpp"
 #include "../Components/Transform.hpp"
 #include "../Components/RigidBody.hpp"
+#include "../Components/Sprite.hpp"
 #include "../Systems/Movement.hpp"
+#include "../Systems/Render.hpp"
+
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
@@ -77,12 +80,20 @@ glm::vec2 playerVelocity;
 
 void Game::Setup()
 {
-    registry->AddSystem<Movement>();
+    registry->AddSystem<RenderSystem>();
+    registry->AddSystem<MovementSystem>();
 
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
+    tank.AddComponent<SpriteComponent>(10, 10);
+
+    Entity tank2 = registry->CreateEntity();
+
+    tank2.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tank2.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
+    tank2.AddComponent<SpriteComponent>(10, 50);
 }
 
 void Game::ProcessInput()
@@ -115,7 +126,7 @@ void Game::Update()
     pravFrameTimestamp = SDL_GetTicks();
 
     registry->Update();
-    registry->GetSystem<Movement>().Update(deltaTime);
+    registry->GetSystem<MovementSystem>().Update(deltaTime);
 }
 
 void Game::Render()
@@ -123,18 +134,20 @@ void Game::Render()
     SDL_SetRenderDrawColor(renderer, 36, 10, 10, 255);
     SDL_RenderClear(renderer);
 
-    SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_FreeSurface(surface);
+    // SDL_Surface* surface = IMG_Load("./assets/images/tank-tiger-right.png");
+    // SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    // SDL_FreeSurface(surface);
 
-    SDL_Rect dstRect = { 
-        static_cast<int>(playerPosition.x),
-        static_cast<int>(playerPosition.y),
-        32,
-        32
-    };
-    SDL_RenderCopy(renderer, texture, NULL, &dstRect);
-    SDL_DestroyTexture(texture);
+    // SDL_Rect dstRect = { 
+    //     static_cast<int>(playerPosition.x),
+    //     static_cast<int>(playerPosition.y),
+    //     32,
+    //     32
+    // };
+    // SDL_RenderCopy(renderer, texture, NULL, &dstRect);
+    // SDL_DestroyTexture(texture);
+
+    registry->GetSystem<RenderSystem>().Update(renderer);
 
     SDL_RenderPresent(renderer);
 }

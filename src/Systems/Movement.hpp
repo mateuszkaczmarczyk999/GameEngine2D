@@ -6,10 +6,10 @@
 #include "../Components/Transform.hpp"
 #include "../Components/RigidBody.hpp"
 
-class Movement: public System
+class MovementSystem: public System
 {
     public:
-        Movement()
+        MovementSystem()
         {
             RequireComponent<TransformComponent>();
             RequireComponent<RigidBodyComponent>();
@@ -24,8 +24,6 @@ class Movement: public System
 
                 transform.position.x += rigidBody.velocity.x * dt;
                 transform.position.y += rigidBody.velocity.y * dt;
-
-                Logger::Log("Entity with id: " + std::to_string(entity.GetId()) + " was move to: " + "X: " + std::to_string(transform.position.x) + " Y: " + std::to_string(transform.position.y));
             }
         };
 };
