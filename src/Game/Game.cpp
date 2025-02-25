@@ -10,6 +10,9 @@
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 
+#include <fstream>
+#include <string>
+
 Game::Game()
 {
     isRunning = false;
@@ -32,10 +35,10 @@ void Game::Initialize()
     }
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    // windowWidth = 800; //displayMode.w;
-    // windowHeight = 600; //displayMode.h;
-    windowWidth = displayMode.w - 50;
-    windowHeight = displayMode.h - 50;
+    windowWidth = 800; //displayMode.w;
+    windowHeight = 800; //displayMode.h;
+    // windowWidth = displayMode.w - 50;
+    // windowHeight = displayMode.h - 50;
 
     window = SDL_CreateWindow(
         "Game Engne 2D",
@@ -76,17 +79,53 @@ void Game::Run()
     }
 }
 
-glm::vec2 playerPosition;
-glm::vec2 playerVelocity;
-
-void Game::Setup()
+void Game::LoadAssets()
 {
+    assetStore->AddTexture(renderer, "jungle", "./assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
+}
 
-    registry->AddSystem<RenderSystem>();
-    registry->AddSystem<MovementSystem>();
+void Game::LoadMap()
+{
+    std::ifstream file("./assets/tilemaps/jungle.map");
+    if (!file)
+    {
+        Logger::Err("Can not open the file!");
+    }
+    std::string line;
 
+    float tileSize = 32.0;
+    float tileScale = 2.0;
+    int col = 0;
+    while (std::getline(file, line))
+    {
+        size_t start = 0;
+        size_t end = 0;
+        int row = 0;
+
+        while ((end = line.find(",", start)) != std::string::npos)
+        {
+            std::string tileRef = line.substr(start, end - start);
+            auto tilePos = std::stoi(tileRef);
+            auto tileYOffset = (tilePos / 10) * tileSize;
+            auto tileXOffset = (tilePos - (10 * (tilePos / 10))) * tileSize;
+
+            Entity tile = registry->CreateEntity();
+            tile.AddComponent<TransformComponent>(glm::vec2(tileSize * tileScale * row, tileSize * tileScale * col), glm::vec2(tileScale, tileScale), 0.0);
+            tile.AddComponent<SpriteComponent>("jungle", 32, 32, tileXOffset, tileYOffset);
+
+            start = end + 1;
+            row ++;
+        }
+        col++;
+    }
+
+    file.close();
+}
+
+void Game::LoadLevel()
+{
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
@@ -98,6 +137,16 @@ void Game::Setup()
     tank2.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 45.0);
     tank2.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
     tank2.AddComponent<SpriteComponent>("truck-ford-left", 32, 32);
+}
+
+void Game::Setup()
+{
+    registry->AddSystem<RenderSystem>();
+    registry->AddSystem<MovementSystem>();
+
+    LoadAssets();
+    LoadMap();
+    LoadLevel();
 }
 
 void Game::ProcessInput()

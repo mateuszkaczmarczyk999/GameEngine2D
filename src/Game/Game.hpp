@@ -18,6 +18,9 @@ class Game
         void Initialize();
         void Run();
         void Setup();
+        void LoadAssets();
+        void LoadMap();
+        void LoadLevel();
         void ProcessInput();
         void Update();
         void Render();
