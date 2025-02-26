@@ -20,7 +20,16 @@ class RenderSystem: public System
 
         void Update(SDL_Renderer* renderer, std::unique_ptr<AssetStore>& assetStore)
         {
-            for (auto entity: GetSystemEntities())
+            auto sortByZIndex = [](Entity a, Entity b) {
+                const auto spriteA = a.GetComponent<SpriteComponent>();
+                const auto spriteB = b.GetComponent<SpriteComponent>();
+                return spriteA.zIndex < spriteB.zIndex;
+            };
+
+            auto entities = GetSystemEntities();
+            std::sort(entities.begin(), entities.end(), sortByZIndex);
+
+            for (auto entity: entities)
             {
                 const auto transform = entity.GetComponent<TransformComponent>();
                 const auto sprite = entity.GetComponent<SpriteComponent>();
@@ -43,9 +52,6 @@ class RenderSystem: public System
                     NULL,
                     SDL_FLIP_NONE
                 );
-
-                // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-                // SDL_RenderFillRect(renderer, &spriteRect);
             }
         };
 };

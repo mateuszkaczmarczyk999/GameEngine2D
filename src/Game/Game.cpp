@@ -110,10 +110,12 @@ void Game::LoadMap()
             auto tilePos = std::stoi(tileRef);
             auto tileYOffset = (tilePos / 10) * tileSize;
             auto tileXOffset = (tilePos - (10 * (tilePos / 10))) * tileSize;
-
+            auto positionX = tileSize * tileScale * row;
+            auto positionY = tileSize * tileScale * col;
+            
             Entity tile = registry->CreateEntity();
-            tile.AddComponent<TransformComponent>(glm::vec2(tileSize * tileScale * row, tileSize * tileScale * col), glm::vec2(tileScale, tileScale), 0.0);
-            tile.AddComponent<SpriteComponent>("jungle", 32, 32, tileXOffset, tileYOffset);
+            tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
+            tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, tileXOffset, tileYOffset);
 
             start = end + 1;
             row ++;
@@ -128,15 +130,15 @@ void Game::LoadLevel()
 {
     Entity tank = registry->CreateEntity();
 
-    tank.AddComponent<TransformComponent>(glm::vec2(10.0, 10.0), glm::vec2(1.0, 1.0), 0.0);
+    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
-    tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32);
+    tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 2);
 
-    Entity tank2 = registry->CreateEntity();
+    Entity truck = registry->CreateEntity();
 
-    tank2.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 45.0);
-    tank2.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 50.0));
-    tank2.AddComponent<SpriteComponent>("truck-ford-left", 32, 32);
+    truck.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 45.0);
+    truck.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
+    truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 1);
 }
 
 void Game::Setup()
