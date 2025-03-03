@@ -88,6 +88,7 @@ void Game::LoadAssets()
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
     assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper.png");
+    assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
 }
 
 void Game::LoadMap()
@@ -150,6 +151,13 @@ void Game::LoadLevel()
     chopper.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 10.0));
     chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
     chopper.AddComponent<AnimationComponent>(2, 15, true);
+
+    Entity radar = registry->CreateEntity();
+
+    radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
+    radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
+    radar.AddComponent<SpriteComponent>("radar", 64, 64, 1);
+    radar.AddComponent<AnimationComponent>(8, 5, true);
 }
 
 void Game::Setup()
