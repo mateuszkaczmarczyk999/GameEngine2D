@@ -1,10 +1,13 @@
 #include "Game.hpp"
 #include "../Logger/Logger.hpp"
-#include "../Components/Transform.hpp"
-#include "../Components/RigidBody.hpp"
-#include "../Components/Sprite.hpp"
-#include "../Systems/Movement.hpp"
-#include "../Systems/Render.hpp"
+#include "../Components/TransformComponent.hpp"
+#include "../Components/RigidBodyComponent.hpp"
+#include "../Components/SpriteComponent.hpp"
+#include "../Components/AnimationComponent.hpp"
+
+#include "../Systems/MovementSystem.hpp"
+#include "../Systems/RenderSystem.hpp"
+#include "../Systems/AnimationSystem.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -84,6 +87,7 @@ void Game::LoadAssets()
     assetStore->AddTexture(renderer, "jungle", "./assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
+    assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper.png");
 }
 
 void Game::LoadMap()
@@ -131,7 +135,7 @@ void Game::LoadLevel()
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
+    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 2);
 
     Entity truck = registry->CreateEntity();
@@ -139,12 +143,20 @@ void Game::LoadLevel()
     truck.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 45.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 1);
+
+    Entity chopper = registry->CreateEntity();
+
+    chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
+    chopper.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 10.0));
+    chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
+    chopper.AddComponent<AnimationComponent>(2, 15, true);
 }
 
 void Game::Setup()
 {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
+    registry->AddSystem<AnimationSystem>();
 
     LoadAssets();
     LoadMap();
@@ -182,6 +194,7 @@ void Game::Update()
 
     registry->Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<AnimationSystem>().Update();
 }
 
 void Game::Render()

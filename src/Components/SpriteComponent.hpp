@@ -1,5 +1,5 @@
-#ifndef SPRITE_HPP
-#define SPRITE_HPP
+#ifndef SPRITECOMPONENT_HPP
+#define SPRITECOMPONENT_HPP
 
 #include <SDL2/SDL_image.h>
 #include <string>

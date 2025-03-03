@@ -28,7 +28,7 @@ LINKER_PATHS = -L/opt/homebrew/lib
 ###########################################################
 # RULES
 ###########################################################
- build:
+build:
 	${CC} ${COMPILER_FLAGS} ${LANG_STD} ${INCLUDE_PATHS} ${SOURCE} ${LINKER_PATHS} ${LINKER_FLAGS} -o ${TARGET};
 
 run:

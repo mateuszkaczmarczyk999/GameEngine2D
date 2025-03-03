@@ -1,5 +1,5 @@
-#ifndef RIGIDBODY_HPP
-#define RIGIDBODY_HPP
+#ifndef RIGIDBODYCOMPONENT_HPP
+#define RIGIDBODYCOMPONENT_HPP
 
 #include <glm/glm.hpp>
 

@@ -1,13 +1,12 @@
-#ifndef RENDER_HPP
-#define RENDER_HPP
+#ifndef RENDERSYSTEM_HPP
+#define RENDERSYSTEM_HPP
 
-#include "../Logger/Logger.hpp"
-#include "../AssetStore/AssetStore.hpp"
-#include "../ECS/ECS.hpp"
-#include "../Components/Transform.hpp"
-#include "../Components/Sprite.hpp"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "../AssetStore/AssetStore.hpp"
+#include "../ECS/ECS.hpp"
+#include "../Components/TransformComponent.hpp"
+#include "../Components/SpriteComponent.hpp"
 
 struct Renderable
 {

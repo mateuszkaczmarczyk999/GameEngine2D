@@ -1,10 +1,9 @@
-#ifndef MOVEMENT_HPP
-#define MOVEMENT_HPP
+#ifndef MOVEMENTSYSTEM_HPP
+#define MOVEMENTSYSTEM_HPP
 
-#include "../Logger/Logger.hpp"
 #include "../ECS/ECS.hpp"
-#include "../Components/Transform.hpp"
-#include "../Components/RigidBody.hpp"
+#include "../Components/TransformComponent.hpp"
+#include "../Components/RigidBodyComponent.hpp"
 
 class MovementSystem: public System
 {

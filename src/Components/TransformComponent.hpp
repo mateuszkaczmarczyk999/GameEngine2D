@@ -1,5 +1,5 @@
-#ifndef TRANSFORM_HPP
-#define TRANSFORM_HPP
+#ifndef TRANSFORMCOMPONENT_HPP
+#define TRANSFORMCOMPONENT_HPP
 
 #include <glm/glm.hpp>
 
