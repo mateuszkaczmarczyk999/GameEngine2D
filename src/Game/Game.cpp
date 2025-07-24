@@ -4,10 +4,12 @@
 #include "../Components/RigidBodyComponent.hpp"
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/AnimationComponent.hpp"
+#include "../Components/BoxColliderComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
 #include "../Systems/AnimationSystem.hpp"
+#include "../Systems/CollisionSystem.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -138,12 +140,14 @@ void Game::LoadLevel()
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 2);
+    tank.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity truck = registry->CreateEntity();
 
-    truck.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 45.0);
-    truck.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 10.0));
+    truck.AddComponent<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 1);
+    truck.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity chopper = registry->CreateEntity();
 
@@ -165,6 +169,7 @@ void Game::Setup()
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
+    registry->AddSystem<CollisionSystem>();
 
     LoadAssets();
     LoadMap();
@@ -203,6 +208,7 @@ void Game::Update()
     registry->Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<AnimationSystem>().Update();
+    registry->GetSystem<CollisionSystem>().Update();
 }
 
 void Game::Render()
