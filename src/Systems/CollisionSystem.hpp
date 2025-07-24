@@ -10,15 +10,15 @@ struct AABB
 {
     glm::vec2 min;
     glm::vec2 max;
-    
-    AABB(const glm::vec2& origin, int width, int height)
+
+    AABB(const glm::vec2 &origin, int width, int height)
     {
         min = origin - glm::vec2(width / 2.0f, height / 2.0f);
         max = origin + glm::vec2(width / 2.0f, height / 2.0f);
     };
 };
 
-class CollisionSystem: public System
+class CollisionSystem : public System
 {
     public:
         CollisionSystem()
@@ -29,39 +29,40 @@ class CollisionSystem: public System
 
         void Update()
         {
-            for (auto entity: GetSystemEntities())
+            auto entities = GetSystemEntities();
+
+            for (auto i = entities.begin(); i != entities.end(); i++)
             {
-                auto& transform = entity.GetComponent<TransformComponent>();
-                auto& collider = entity.GetComponent<BoxColliderComponent>();
-                int entittyId = entity.GetId();
+                Entity entityA = *i;
+                auto &transformA = entityA.GetComponent<TransformComponent>();
+                auto &colliderA = entityA.GetComponent<BoxColliderComponent>();
 
-                AABB currentAABB(transform.position + collider.offset, collider.width, collider.height);
+                AABB aabbForEntityA(transformA.position + colliderA.offset, colliderA.width, colliderA.height);
 
-                for (auto otherEntity: GetSystemEntities())
+                for (auto j = i; j != entities.end(); j++)
                 {
-                    int otherEntityId = otherEntity.GetId();
-                    if (entittyId == otherEntityId) continue;
+                    if (i == j) continue; // Skip self-collision
+                    
+                    Entity entityB = *j;
+                    auto &transformB = entityB.GetComponent<TransformComponent>();
+                    auto &colliderB = entityB.GetComponent<BoxColliderComponent>();
 
-                    auto& otherTransform = otherEntity.GetComponent<TransformComponent>();
-                    auto& otherCollider = otherEntity.GetComponent<BoxColliderComponent>();
+                    AABB aabbForEntityB(transformB.position + colliderB.offset, colliderB.width, colliderB.height);
 
-                    AABB otherAABB(otherTransform.position + otherCollider.offset, otherCollider.width, otherCollider.height);
-
-                    if (CheckAABBCollision(currentAABB, otherAABB))
+                    if (CheckAABBCollision(aabbForEntityA, aabbForEntityB))
                     {
                         // Handle collision logic here
-                        Logger::Log("Collision detected between entity " + std::to_string(entittyId) + " and entity " + std::to_string(otherEntity.GetId()));
+                        Logger::Log("Collision detected between entity " + std::to_string(entityA.GetId()) + " and entity " + std::to_string(entityB.GetId()));
                     }
                 }
-
             }
         };
 
     private:
-        bool CheckAABBCollision(const AABB& rectA, const AABB& rectB)
+        bool CheckAABBCollision(const AABB &rectA, const AABB &rectB)
         {
             return (rectA.min.x < rectB.max.x && rectA.max.x > rectB.min.x &&
                     rectA.min.y < rectB.max.y && rectA.max.y > rectB.min.y);
         }
-};
+    };
 #endif
