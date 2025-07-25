@@ -10,6 +10,7 @@
 #include "../Systems/RenderSystem.hpp"
 #include "../Systems/AnimationSystem.hpp"
 #include "../Systems/CollisionSystem.hpp"
+#include "../Systems/CollisionRenderSystem.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -170,6 +171,7 @@ void Game::Setup()
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>();
+    registry->AddSystem<CollisionRenderSystem>();
 
     LoadAssets();
     LoadMap();
@@ -217,6 +219,7 @@ void Game::Render()
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+    registry->GetSystem<CollisionRenderSystem>().Update(renderer);
 
     SDL_RenderPresent(renderer);
 }
