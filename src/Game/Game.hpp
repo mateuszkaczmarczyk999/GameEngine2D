@@ -32,6 +32,7 @@ class Game
     private:
         int pravFrameTimestamp = 0;
         bool isRunning;
+        bool debugMode;
         SDL_Window* window;
         SDL_Renderer* renderer;
 

@@ -22,6 +22,7 @@
 Game::Game()
 {
     isRunning = false;
+    debugMode = false;
     registry = std::make_unique<Registry>();
     assetStore = std::make_unique<AssetStore>();
     Logger::Log("Game class created.");
@@ -190,6 +191,7 @@ void Game::ProcessInput()
                 break;
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
+                if (sdlEvent.key.keysym.sym == SDLK_d) debugMode = !debugMode;
                 break;
             
             default:
@@ -219,7 +221,7 @@ void Game::Render()
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
-    registry->GetSystem<CollisionRenderSystem>().Update(renderer);
+    if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update(renderer);
 
     SDL_RenderPresent(renderer);
 }
