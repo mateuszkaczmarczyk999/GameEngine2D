@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <deque>
 
 #include "../Logger/Logger.hpp"
 
@@ -19,6 +20,7 @@ class Entity
         Entity(int id): id(id) {};
         Entity(const Entity& other) = default;
         int GetId() const;
+        void Kill();
 
         Entity& operator = (const Entity& other) = default;
         bool operator == (const Entity& other) const { return id == other.id; }
@@ -62,11 +64,11 @@ class System
         System() = default;
         virtual ~System() = default;
         void AddEntityToSystem(Entity entity);
-        void RemoveEntityToSystem(Entity entity);
+        void RemoveEntityFromSystem(Entity entity);
         const Signature& GetComponentSignature() const;
         std::vector<Entity> GetSystemEntities() const;
 
-        // Defines the component tyoe that entitiies must have to be considered by the system
+        // Defines the component type that entities must have to be considered by the system
         template <typename TComponent> void RequireComponent();
 
     private:
@@ -117,6 +119,7 @@ class Registry
         };
         void Update();
         Entity CreateEntity();
+        void KillEntity(Entity entity);
 
         template <typename T, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
         template <typename T> void RemoveComponent(Entity entity);
@@ -129,9 +132,11 @@ class Registry
         template <typename T> T& GetSystem() const;
 
         void AddEntityToSystems(Entity entity);
+        void RemoveEntityFromSystems(Entity entity);
         
     private:
         int countEntitis = 0;
+        std::deque<int> freeIds;
         std::set<Entity> entitiesToBeAdded;
         std::set<Entity> entitiesToBeKilled;
 
