@@ -1,0 +1,87 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Wall",
+      "-Wfatal-errors",
+      "-std=c++17",
+      "-I./libs",
+      "-I/opt/homebrew/include",
+      "-o",
+      "gameengine",
+      "src/Main.cpp"
+    ],
+    "directory": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D",
+    "file": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/src/Main.cpp",
+    "output": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/gameengine"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Wall",
+      "-Wfatal-errors",
+      "-std=c++17",
+      "-I./libs",
+      "-I/opt/homebrew/include",
+      "-o",
+      "gameengine",
+      "src/Game/Game.cpp"
+    ],
+    "directory": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D",
+    "file": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/src/Game/Game.cpp",
+    "output": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/gameengine"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Wall",
+      "-Wfatal-errors",
+      "-std=c++17",
+      "-I./libs",
+      "-I/opt/homebrew/include",
+      "-o",
+      "gameengine",
+      "src/Logger/Logger.cpp"
+    ],
+    "directory": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D",
+    "file": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/src/Logger/Logger.cpp",
+    "output": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/gameengine"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Wall",
+      "-Wfatal-errors",
+      "-std=c++17",
+      "-I./libs",
+      "-I/opt/homebrew/include",
+      "-o",
+      "gameengine",
+      "src/ECS/ECS.cpp"
+    ],
+    "directory": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D",
+    "file": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/src/ECS/ECS.cpp",
+    "output": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/gameengine"
+  },
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-c",
+      "-Wall",
+      "-Wfatal-errors",
+      "-std=c++17",
+      "-I./libs",
+      "-I/opt/homebrew/include",
+      "-o",
+      "gameengine",
+      "src/AssetStore/AssetStore.cpp"
+    ],
+    "directory": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D",
+    "file": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/src/AssetStore/AssetStore.cpp",
+    "output": "/Users/mateuszkaczmarczyk/Development/cpp/GameEngine2D/gameengine"
+  }
+]
