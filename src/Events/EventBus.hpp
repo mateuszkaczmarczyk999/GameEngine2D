@@ -53,6 +53,27 @@ public:
     ~EventBus() {
         Logger::Log("EventBus was destroyed");
     }
+
+    template<typename TOwner, typename TEvent>
+    void SubscribeToEvent(TOwner *owner, void (TOwner::*callback)(TEvent &event)) {
+        if (!subscribers[typeid(TEvent)].get()) {
+            subscribers[typeid(TEvent)] = std::make_unique<HandlerList>();
+        }
+        auto subscriber = std::make_unique<EventCallback<TOwner, TEvent>>(owner, callback);
+        subscribers[typeid(TEvent)]->push_back(std::move(subscriber));
+    }
+
+    template<typename TEvent, typename ...TArgs>
+    void EmitEvent(TArgs&& ...args) {
+        auto handlers = subscribers[typeid(TEvent)].get();
+        if (handlers) {
+            for (auto it = handlers->begin(); it != handlers->end(); it++) {
+                auto handler = it->get();
+                TEvent event(std::forward<TArgs>(args)...);
+                handler->Execute(event);
+            }
+        }
+    }
 };
 
 #endif //EVENTBUS_HPP
