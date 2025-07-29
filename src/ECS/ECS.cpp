@@ -3,52 +3,41 @@
 
 int IComponent::nextId = 0;
 
-int Entity::GetId() const
-{
+int Entity::GetId() const {
     return id;
 }
 
-void Entity::Kill()
-{
+void Entity::Kill() {
     registry->KillEntity(*this);
 }
 
-void System::AddEntityToSystem(Entity entity)
-{
+void System::AddEntityToSystem(Entity entity) {
     systemEntities.push_back(entity);
 }
 
-void System::RemoveEntityFromSystem(Entity entity)
-{
-    systemEntities.erase(std::remove_if(systemEntities.begin(), systemEntities.end(), [&entity](Entity other){
+void System::RemoveEntityFromSystem(Entity entity) {
+    systemEntities.erase(std::remove_if(systemEntities.begin(), systemEntities.end(), [&entity](Entity other) {
         return entity == other;
     }), systemEntities.end());
 }
 
-std::vector<Entity> System::GetSystemEntities() const
-{
+std::vector<Entity> System::GetSystemEntities() const {
     return systemEntities;
 }
 
-const Signature& System::GetComponentSignature() const
-{
+const Signature &System::GetComponentSignature() const {
     return componentSignature;
 }
 
-Entity Registry::CreateEntity()
-{
+Entity Registry::CreateEntity() {
     int entityId;
 
-    if (!freeIds.empty())
-    {
+    if (!freeIds.empty()) {
         entityId = freeIds.front();
         freeIds.pop_front();
-    }
-    else
-    {
+    } else {
         entityId = countEntitis++;
-        if (entityId >= entityComponentSignatures.size()) 
-        {
+        if (entityId >= entityComponentSignatures.size()) {
             entityComponentSignatures.resize(entityId + 1);
         }
     }
@@ -63,49 +52,40 @@ Entity Registry::CreateEntity()
     return entity;
 }
 
-void Registry::KillEntity(Entity entity)
-{
+void Registry::KillEntity(Entity entity) {
     entitiesToBeKilled.insert(entity);
     Logger::Log("Entity with id: " + std::to_string(entity.GetId()) + " killed.");
 }
 
-void Registry::AddEntityToSystems(Entity entity)
-{
+void Registry::AddEntityToSystems(Entity entity) {
     const auto entityId = entity.GetId();
-    const Signature& entityComponentSignature = entityComponentSignatures[entityId];
+    const Signature &entityComponentSignature = entityComponentSignatures[entityId];
 
-    for (auto& pair: systems)
-    {
+    for (auto &pair: systems) {
         std::shared_ptr<System> system = pair.second;
-        const Signature& systemComponentSignature = system->GetComponentSignature();
+        const Signature &systemComponentSignature = system->GetComponentSignature();
         bool isInterested = (systemComponentSignature & entityComponentSignature) == systemComponentSignature;
 
-        if (isInterested)
-        {
+        if (isInterested) {
             system->AddEntityToSystem(entity);
         }
     }
 }
 
-void Registry::RemoveEntityFromSystems(Entity entity)
-{
-    for (auto& pair: systems)
-    {
+void Registry::RemoveEntityFromSystems(Entity entity) {
+    for (auto &pair: systems) {
         std::shared_ptr<System> system = pair.second;
         system->RemoveEntityFromSystem(entity);
     }
 }
 
-void Registry::Update()
-{
-    for (auto entity: entitiesToBeAdded)
-    {
+void Registry::Update() {
+    for (auto entity: entitiesToBeAdded) {
         AddEntityToSystems(entity);
     }
     entitiesToBeAdded.clear();
 
-    for (auto entity: entitiesToBeKilled)
-    {
+    for (auto entity: entitiesToBeKilled) {
         RemoveEntityFromSystems(entity);
         entityComponentSignatures[entity.GetId()].reset();
         freeIds.push_back(entity.GetId());

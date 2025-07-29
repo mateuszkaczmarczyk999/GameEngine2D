@@ -4,8 +4,7 @@
 #include <SDL2/SDL.h>
 #include <string>
 
-struct AnimationComponent
-{
+struct AnimationComponent {
     int frameCount;
     int frameSpeed;
     bool isLooped;

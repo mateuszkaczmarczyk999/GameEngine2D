@@ -6,18 +6,20 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-class AssetStore
-{
-    public:
-        AssetStore();
-        ~AssetStore();
+class AssetStore {
+public:
+    AssetStore();
 
-        void AddTexture(SDL_Renderer* renderer, const std::string& assetId, const std::string& filePath);
-        SDL_Texture* GetTexture(const std::string& assetId);
-        void ClearAssets();
+    ~AssetStore();
 
-    private:
-        std::map<std::string, SDL_Texture*> textures;
+    void AddTexture(SDL_Renderer *renderer, const std::string &assetId, const std::string &filePath);
+
+    SDL_Texture *GetTexture(const std::string &assetId);
+
+    void ClearAssets();
+
+private:
+    std::map<std::string, SDL_Texture *> textures;
 };
 
 #endif

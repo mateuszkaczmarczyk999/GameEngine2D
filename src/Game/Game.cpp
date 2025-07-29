@@ -19,24 +19,21 @@
 #include <fstream>
 #include <string>
 
-Game::Game()
-{
+Game::Game() {
     isRunning = false;
     debugMode = false;
     registry = std::make_unique<Registry>();
     assetStore = std::make_unique<AssetStore>();
+    eventBus = std::make_unique<EventBus>();
     Logger::Log("Game class created.");
 }
 
-Game::~Game()
-{
+Game::~Game() {
     Logger::Log("Game class destroyed.");
 }
 
-void Game::Initialize()
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-    {
+void Game::Initialize() {
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         Logger::Err("Error with initializing SDL.");
         return;
     }
@@ -55,8 +52,7 @@ void Game::Initialize()
         windowHeight,
         SDL_WINDOW_BORDERLESS
     );
-    if (!window)
-    {
+    if (!window) {
         Logger::Err("Error with creating SDL window.");
         return;
     }
@@ -65,8 +61,7 @@ void Game::Initialize()
         -1,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
-    if (!renderer)
-    {
+    if (!renderer) {
         Logger::Err("Error with creating SDL renderer.");
         return;
     }
@@ -75,19 +70,16 @@ void Game::Initialize()
     isRunning = true;
 }
 
-void Game::Run()
-{
+void Game::Run() {
     Setup();
-    while(isRunning)
-    {
+    while (isRunning) {
         ProcessInput();
         Update();
         Render();
     }
 }
 
-void Game::LoadAssets()
-{
+void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "jungle", "./assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
@@ -95,11 +87,9 @@ void Game::LoadAssets()
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
 }
 
-void Game::LoadMap()
-{
+void Game::LoadMap() {
     std::ifstream file("./assets/tilemaps/jungle.map");
-    if (!file)
-    {
+    if (!file) {
         Logger::Err("Can not open the file!");
     }
     std::string line;
@@ -107,27 +97,26 @@ void Game::LoadMap()
     float tileSize = 32.0;
     float tileScale = 2.0;
     int col = 0;
-    while (std::getline(file, line))
-    {
+    while (std::getline(file, line)) {
         size_t start = 0;
         size_t end = 0;
         int row = 0;
 
-        while ((end = line.find(",", start)) != std::string::npos)
-        {
+        while ((end = line.find(",", start)) != std::string::npos) {
             std::string tileRef = line.substr(start, end - start);
             auto tilePos = std::stoi(tileRef);
             auto tileYOffset = (tilePos / 10) * tileSize;
             auto tileXOffset = (tilePos - (10 * (tilePos / 10))) * tileSize;
             auto positionX = tileSize * tileScale * row;
             auto positionY = tileSize * tileScale * col;
-            
+
             Entity tile = registry->CreateEntity();
-            tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
+            tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale),
+                                                  0.0);
             tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, tileXOffset, tileYOffset);
 
             start = end + 1;
-            row ++;
+            row++;
         }
         col++;
     }
@@ -135,8 +124,7 @@ void Game::LoadMap()
     file.close();
 }
 
-void Game::LoadLevel()
-{
+void Game::LoadLevel() {
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
@@ -166,8 +154,7 @@ void Game::LoadLevel()
     radar.AddComponent<AnimationComponent>(8, 5, true);
 }
 
-void Game::Setup()
-{
+void Game::Setup() {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
@@ -179,13 +166,10 @@ void Game::Setup()
     LoadLevel();
 }
 
-void Game::ProcessInput()
-{
+void Game::ProcessInput() {
     SDL_Event sdlEvent;
-    while (SDL_PollEvent(&sdlEvent))
-    {
-        switch (sdlEvent.type)
-        {
+    while (SDL_PollEvent(&sdlEvent)) {
+        switch (sdlEvent.type) {
             case SDL_QUIT:
                 isRunning = false;
                 break;
@@ -193,15 +177,14 @@ void Game::ProcessInput()
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
                 if (sdlEvent.key.keysym.sym == SDLK_d) debugMode = !debugMode;
                 break;
-            
+
             default:
                 break;
         }
     }
 }
 
-void Game::Update()
-{
+void Game::Update() {
     int timeToWait = MILLISECS_PER_FRAME - (SDL_GetTicks() - pravFrameTimestamp);
     if (CAPPED_FPS && timeToWait > 0 && timeToWait <= MILLISECS_PER_FRAME) SDL_Delay(timeToWait);
 
@@ -215,8 +198,7 @@ void Game::Update()
     registry->GetSystem<CollisionSystem>().Update();
 }
 
-void Game::Render()
-{
+void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 36, 10, 10, 255);
     SDL_RenderClear(renderer);
 
@@ -226,8 +208,7 @@ void Game::Render()
     SDL_RenderPresent(renderer);
 }
 
-void Game::Destroy()
-{
+void Game::Destroy() {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

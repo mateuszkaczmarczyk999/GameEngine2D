@@ -4,40 +4,51 @@
 #include <SDL2/SDL.h>
 #include "../ECS/ECS.hpp"
 #include "../AssetStore/AssetStore.hpp"
+#include "../Events/EventBus.hpp"
 
-const int FPS = 60; 
+const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
 const bool CAPPED_FPS = true;
 
-class Game
-{
-    public:
-        Game();
-        ~Game();
+class Game {
+public:
+    Game();
 
-        void Initialize();
-        void Run();
-        void Setup();
-        void LoadAssets();
-        void LoadMap();
-        void LoadLevel();
-        void ProcessInput();
-        void Update();
-        void Render();
-        void Destroy();
+    ~Game();
 
-        int windowWidth;
-        int windowHeight;
+    void Initialize();
 
-    private:
-        int pravFrameTimestamp = 0;
-        bool isRunning;
-        bool debugMode;
-        SDL_Window* window;
-        SDL_Renderer* renderer;
+    void Run();
 
-        std::unique_ptr<Registry> registry;
-        std::unique_ptr<AssetStore> assetStore;
+    void Setup();
+
+    void LoadAssets();
+
+    void LoadMap();
+
+    void LoadLevel();
+
+    void ProcessInput();
+
+    void Update();
+
+    void Render();
+
+    void Destroy();
+
+    int windowWidth;
+    int windowHeight;
+
+private:
+    int pravFrameTimestamp = 0;
+    bool isRunning;
+    bool debugMode;
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+
+    std::unique_ptr<Registry> registry;
+    std::unique_ptr<AssetStore> assetStore;
+    std::unique_ptr<EventBus> eventBus;
 };
 
 #endif

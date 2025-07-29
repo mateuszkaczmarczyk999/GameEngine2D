@@ -1,6 +1,6 @@
 #include "./Game/Game.hpp"
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
     Game game;
 
     game.Initialize();
