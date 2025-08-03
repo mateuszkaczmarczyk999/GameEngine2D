@@ -3,6 +3,8 @@
 
 #include "../Components/TransformComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
+#include "../Events/EventBus.hpp"
+#include "../Events/CollisionEvent.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 
@@ -18,7 +20,8 @@ struct AABB {
 
 class CollisionSystem : public System {
 public:
-    CollisionSystem() {
+    CollisionSystem(EventBus* eventBus) {
+        this->eventBus = eventBus;
         RequireComponent<TransformComponent>();
         RequireComponent<BoxColliderComponent>();
     };
@@ -45,16 +48,21 @@ public:
                 if (CheckAABBCollision(aabbForEntityA, aabbForEntityB)) {
                     // Handle collision logic here
                     Logger::Log(
-                        "Collision detected between entity " + std::to_string(entityA.GetId()) + " and entity " +
-                        std::to_string(
-                            entityB.GetId()));
+                        "Collision detected between entity " +
+                        std::to_string(entityA.GetId()) +
+                        " and entity " +
+                        std::to_string(entityB.GetId())
+                    );
+
+                    this->eventBus->EmitEvent<CollisionEvent>(entityA, entityB);
                 }
             }
         }
     };
 
 private:
-    bool CheckAABBCollision(const AABB &rectA, const AABB &rectB) {
+    EventBus* eventBus;
+    static bool CheckAABBCollision(const AABB &rectA, const AABB &rectB) {
         return (rectA.min.x < rectB.max.x && rectA.max.x > rectB.min.x &&
                 rectA.min.y < rectB.max.y && rectA.max.y > rectB.min.y);
     }

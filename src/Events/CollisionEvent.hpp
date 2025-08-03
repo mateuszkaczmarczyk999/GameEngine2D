@@ -9,8 +9,7 @@ public:
     Entity entityA;
     Entity entityB;
 
-    CollisionEvent(const Entity &entityA, const Entity &entityB): entityA(entityA), entityB(entityB) {
-    };
+    CollisionEvent(const Entity &entityA, const Entity &entityB): entityA(entityA), entityB(entityB) {};
 };
 
 #endif //COLLISIONEVENT_HPP

@@ -65,6 +65,7 @@ void Game::Initialize() {
         Logger::Err("Error with creating SDL renderer.");
         return;
     }
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     // SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
     isRunning = true;
@@ -158,12 +159,14 @@ void Game::Setup() {
     registry->AddSystem<RenderSystem>();
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
-    registry->AddSystem<CollisionSystem>();
-    registry->AddSystem<CollisionRenderSystem>();
+    registry->AddSystem<CollisionSystem>(eventBus.get());
+    registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer);
 
     LoadAssets();
     LoadMap();
     LoadLevel();
+
+    registry->GetSystem<CollisionRenderSystem>().SubscribeToEvents();
 }
 
 void Game::ProcessInput() {
@@ -203,7 +206,7 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
-    if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update(renderer);
+    if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update();
 
     SDL_RenderPresent(renderer);
 }
