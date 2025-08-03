@@ -12,6 +12,9 @@
 #include "../Systems/CollisionSystem.hpp"
 #include "../Systems/CollisionRenderSystem.hpp"
 #include "../Systems/DamageSystem.hpp"
+#include "../Systems/KeyboardMovementSystem.hpp"
+
+#include "../Events/KeyPressedEvent.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -48,7 +51,7 @@ void Game::Initialize() {
     // windowHeight = displayMode.h - 50;
 
     window = SDL_CreateWindow(
-        "Game Engne 2D",
+        "Game Engine 2D",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         windowWidth,
@@ -164,6 +167,7 @@ void Game::Setup() {
     registry->AddSystem<CollisionSystem>(eventBus.get());
     registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer);
     registry->AddSystem<DamageSystem>(eventBus.get());
+    registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
 
     LoadAssets();
     LoadMap();
@@ -171,6 +175,7 @@ void Game::Setup() {
 
     registry->GetSystem<CollisionRenderSystem>().SubscribeToEvents();
     registry->GetSystem<DamageSystem>().SubscribeToEvents();
+    registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents();
 }
 
 void Game::ProcessInput() {
@@ -183,6 +188,7 @@ void Game::ProcessInput() {
             case SDL_KEYDOWN:
                 if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) isRunning = false;
                 if (sdlEvent.key.keysym.sym == SDLK_d) debugMode = !debugMode;
+                this->eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
                 break;
 
             default:
