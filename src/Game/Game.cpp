@@ -11,6 +11,7 @@
 #include "../Systems/AnimationSystem.hpp"
 #include "../Systems/CollisionSystem.hpp"
 #include "../Systems/CollisionRenderSystem.hpp"
+#include "../Systems/DamageSystem.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
@@ -18,6 +19,8 @@
 
 #include <fstream>
 #include <string>
+
+#include "../Systems/DamageSystem.hpp"
 
 Game::Game() {
     isRunning = false;
@@ -112,8 +115,7 @@ void Game::LoadMap() {
             auto positionY = tileSize * tileScale * col;
 
             Entity tile = registry->CreateEntity();
-            tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale),
-                                                  0.0);
+            tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
             tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, tileXOffset, tileYOffset);
 
             start = end + 1;
@@ -161,12 +163,14 @@ void Game::Setup() {
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>(eventBus.get());
     registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer);
+    registry->AddSystem<DamageSystem>(eventBus.get());
 
     LoadAssets();
     LoadMap();
     LoadLevel();
 
     registry->GetSystem<CollisionRenderSystem>().SubscribeToEvents();
+    registry->GetSystem<DamageSystem>().SubscribeToEvents();
 }
 
 void Game::ProcessInput() {
