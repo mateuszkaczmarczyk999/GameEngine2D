@@ -54,6 +54,10 @@ public:
         Logger::Log("EventBus was destroyed");
     }
 
+    void Reset() {
+        subscribers.clear();
+    }
+
     template<typename TOwner, typename TEvent>
     void SubscribeToEvent(TOwner *owner, void (TOwner::*callback)(TEvent &event)) {
         if (!subscribers[typeid(TEvent)].get()) {

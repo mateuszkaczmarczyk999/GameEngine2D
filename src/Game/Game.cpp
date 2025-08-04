@@ -5,6 +5,7 @@
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/AnimationComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
+#include "../Components/KeyboardMovementComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -83,6 +84,7 @@ void Game::Run() {
         ProcessInput();
         Update();
         Render();
+        // this->eventBus->Reset();
     }
 }
 
@@ -90,7 +92,7 @@ void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "jungle", "./assets/tilemaps/jungle.png");
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
-    assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper.png");
+    assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
 }
 
@@ -131,6 +133,14 @@ void Game::LoadMap() {
 }
 
 void Game::LoadLevel() {
+    Entity chopper = registry->CreateEntity();
+
+    chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
+    chopper.AddComponent<RigidBodyComponent>();
+    chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
+    chopper.AddComponent<AnimationComponent>(2, 15, true);
+    chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -25.0), glm::vec2(25.0, 0.0), glm::vec2(0.0, 25.0), glm::vec2(-25.0, 0.0));
+
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
@@ -144,13 +154,6 @@ void Game::LoadLevel() {
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 1);
     truck.AddComponent<BoxColliderComponent>(32, 32);
-
-    Entity chopper = registry->CreateEntity();
-
-    chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
-    chopper.AddComponent<RigidBodyComponent>(glm::vec2(30.0, 10.0));
-    chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
-    chopper.AddComponent<AnimationComponent>(2, 15, true);
 
     Entity radar = registry->CreateEntity();
 
@@ -206,9 +209,9 @@ void Game::Update() {
     pravFrameTimestamp = SDL_GetTicks();
 
     registry->Update();
-    registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<CollisionSystem>().Update();
+    registry->GetSystem<MovementSystem>().Update(deltaTime);
 }
 
 void Game::Render() {

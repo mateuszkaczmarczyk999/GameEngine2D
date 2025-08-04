@@ -15,7 +15,7 @@ public:
     void Update(double dt) {
         for (auto entity: GetSystemEntities()) {
             auto &transform = entity.GetComponent<TransformComponent>();
-            const auto rigidBody = entity.GetComponent<RigidBodyComponent>();
+            const auto &rigidBody = entity.GetComponent<RigidBodyComponent>();
 
             transform.position.x += rigidBody.velocity.x * dt;
             transform.position.y += rigidBody.velocity.y * dt;
