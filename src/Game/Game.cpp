@@ -6,6 +6,7 @@
 #include "../Components/AnimationComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
 #include "../Components/KeyboardMovementComponent.hpp"
+#include "../Components/CameraFollowComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -75,6 +76,11 @@ void Game::Initialize() {
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     // SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
+    cameraFrame.x = 0;
+    cameraFrame.y = 0;
+    cameraFrame.w = windowWidth;
+    cameraFrame.h = windowHeight;
+
     isRunning = true;
 }
 
@@ -140,6 +146,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -25.0), glm::vec2(25.0, 0.0), glm::vec2(0.0, 25.0), glm::vec2(-25.0, 0.0));
+    chopper.AddComponent<CameraFollowComponent>();
 
     Entity tank = registry->CreateEntity();
 
