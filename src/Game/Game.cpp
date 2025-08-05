@@ -8,6 +8,7 @@
 #include "../Components/KeyboardMovementComponent.hpp"
 #include "../Components/CameraFollowComponent.hpp"
 #include "../Components/ProjectileEmittingComponent.hpp"
+#include "../Components/HealthComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -149,6 +150,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
+    chopper.AddComponent<HealthComponent>(100);
 
     Entity tank = registry->CreateEntity();
 
@@ -157,6 +159,7 @@ void Game::LoadLevel() {
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
     tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(100.0, 0.0), 500, 1000, 10);
+    tank.AddComponent<HealthComponent>(100);
 
     Entity truck = registry->CreateEntity();
 
@@ -164,6 +167,7 @@ void Game::LoadLevel() {
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
+    truck.AddComponent<HealthComponent>(100);
 
     Entity radar = registry->CreateEntity();
 
