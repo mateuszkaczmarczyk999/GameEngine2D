@@ -171,11 +171,11 @@ void Game::LoadLevel() {
 }
 
 void Game::Setup() {
-    registry->AddSystem<RenderSystem>();
+    registry->AddSystem<RenderSystem>(renderer, cameraFrame, assetStore.get());
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>(eventBus.get());
-    registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer);
+    registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer, cameraFrame);
     registry->AddSystem<DamageSystem>(eventBus.get());
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
 
@@ -225,7 +225,7 @@ void Game::Render() {
     SDL_SetRenderDrawColor(renderer, 36, 10, 10, 255);
     SDL_RenderClear(renderer);
 
-    registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+    registry->GetSystem<RenderSystem>().Update();
     if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update();
 
     SDL_RenderPresent(renderer);

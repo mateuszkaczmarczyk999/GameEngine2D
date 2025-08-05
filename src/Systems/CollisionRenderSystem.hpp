@@ -9,9 +9,10 @@
 
 class CollisionRenderSystem : public System {
 public:
-    CollisionRenderSystem(EventBus* eventBus, SDL_Renderer* renderer) {
+    CollisionRenderSystem(EventBus* eventBus, SDL_Renderer* renderer, const SDL_Rect& cameraFrame) {
         this->eventBus = eventBus;
         this->renderer = renderer;
+        this->cameraFrame = cameraFrame;
         RequireComponent<TransformComponent>();
         RequireComponent<BoxColliderComponent>();
     };
@@ -31,8 +32,8 @@ public:
             auto &collider = entity.GetComponent<BoxColliderComponent>();
 
             DrawRectangle(
-                static_cast<int>(transform.position.x + collider.offset.x),
-                static_cast<int>(transform.position.y + collider.offset.y),
+                static_cast<int>(transform.position.x + collider.offset.x) - this->cameraFrame.x,
+                static_cast<int>(transform.position.y + collider.offset.y) - this->cameraFrame.y,
                 collider.width,
                 collider.height
             );
@@ -44,6 +45,7 @@ public:
 private:
     EventBus* eventBus;
     SDL_Renderer* renderer;
+    SDL_Rect cameraFrame;
     std::array<int, 4> color = {0, 255, 0, 255};
     bool filled = false;
 

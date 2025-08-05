@@ -20,12 +20,15 @@ struct Renderable {
 
 class RenderSystem : public System {
 public:
-    RenderSystem() {
+    RenderSystem(SDL_Renderer* renderer, const SDL_Rect& cameraFrame, AssetStore* assetStore) {
+        this->renderer = renderer;
+        this->cameraFrame = cameraFrame;
+        this->assetStore = assetStore;
         RequireComponent<TransformComponent>();
         RequireComponent<SpriteComponent>();
     };
 
-    void Update(SDL_Renderer *renderer, std::unique_ptr<AssetStore> &assetStore) {
+    void Update() {
         std::vector<Renderable> renderables;
 
         for (auto entity: GetSystemEntities()) {
@@ -42,15 +45,15 @@ public:
             SDL_Rect srcRect = renderable.sprite.srcRect;
 
             SDL_Rect destRect = {
-                static_cast<int>(renderable.transform.position.x),
-                static_cast<int>(renderable.transform.position.y),
+                static_cast<int>(renderable.transform.position.x) - this->cameraFrame.x,
+                static_cast<int>(renderable.transform.position.y) - this->cameraFrame.y,
                 static_cast<int>(renderable.sprite.width * renderable.transform.scale.x),
                 static_cast<int>(renderable.sprite.height * renderable.transform.scale.y),
             };
 
             SDL_RenderCopyEx(
-                renderer,
-                assetStore->GetTexture(renderable.sprite.assetId),
+                this->renderer,
+                this->assetStore->GetTexture(renderable.sprite.assetId),
                 &srcRect,
                 &destRect,
                 renderable.transform.rotation,
@@ -59,6 +62,10 @@ public:
             );
         }
     };
+private:
+    SDL_Renderer* renderer;
+    SDL_Rect cameraFrame;
+    AssetStore* assetStore;
 };
 
 #endif
