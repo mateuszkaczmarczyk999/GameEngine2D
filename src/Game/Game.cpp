@@ -15,6 +15,7 @@
 #include "../Systems/CollisionRenderSystem.hpp"
 #include "../Systems/DamageSystem.hpp"
 #include "../Systems/KeyboardMovementSystem.hpp"
+#include "../Systems/CameraFollowSystem.hpp"
 
 #include "../Events/KeyPressedEvent.hpp"
 
@@ -127,7 +128,7 @@ void Game::LoadMap() {
 
             Entity tile = registry->CreateEntity();
             tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
-            tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, tileXOffset, tileYOffset);
+            tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, false, tileXOffset, tileYOffset);
 
             start = end + 1;
             row++;
@@ -143,16 +144,16 @@ void Game::LoadLevel() {
 
     chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
     chopper.AddComponent<RigidBodyComponent>();
-    chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 1);
+    chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 2);
     chopper.AddComponent<AnimationComponent>(2, 15, true);
-    chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -25.0), glm::vec2(25.0, 0.0), glm::vec2(0.0, 25.0), glm::vec2(-25.0, 0.0));
+    chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
 
     Entity tank = registry->CreateEntity();
 
     tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
-    tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 2);
+    tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity truck = registry->CreateEntity();
@@ -166,7 +167,7 @@ void Game::LoadLevel() {
 
     radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
     radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
-    radar.AddComponent<SpriteComponent>("radar", 64, 64, 1);
+    radar.AddComponent<SpriteComponent>("radar", 64, 64, 3, true);
     radar.AddComponent<AnimationComponent>(8, 5, true);
 }
 
@@ -178,6 +179,7 @@ void Game::Setup() {
     registry->AddSystem<CollisionRenderSystem>(renderer, cameraFrame, eventBus.get());
     registry->AddSystem<DamageSystem>(eventBus.get());
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
+    registry->AddSystem<CameraFollowSystem>(cameraFrame);
 
     LoadAssets();
     LoadMap();
@@ -218,6 +220,7 @@ void Game::Update() {
     registry->Update();
     registry->GetSystem<AnimationSystem>().Update();
     registry->GetSystem<CollisionSystem>().Update();
+    registry->GetSystem<CameraFollowSystem>().Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
 }
 

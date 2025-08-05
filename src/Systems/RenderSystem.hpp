@@ -40,12 +40,14 @@ public:
 
         for (auto &renderable: renderables) {
             SDL_Rect srcRect = renderable.sprite.srcRect;
+            const auto& sprite = renderable.sprite;
+            const auto& transform = renderable.transform;
 
             SDL_Rect destRect = {
-                static_cast<int>(renderable.transform.position.x) - this->cameraFrame.x,
-                static_cast<int>(renderable.transform.position.y) - this->cameraFrame.y,
-                static_cast<int>(renderable.sprite.width * renderable.transform.scale.x),
-                static_cast<int>(renderable.sprite.height * renderable.transform.scale.y),
+                static_cast<int>(transform.position.x) - (sprite.uiFixed ? 0 : this->cameraFrame.x),
+                static_cast<int>(transform.position.y) - (sprite.uiFixed ? 0 : this->cameraFrame.y),
+                static_cast<int>(sprite.width * transform.scale.x),
+                static_cast<int>(sprite.height * transform.scale.y),
             };
 
             SDL_RenderCopyEx(
