@@ -6,6 +6,7 @@
 #include "../Components/SpriteComponent.hpp"
 #include "../Components/RigidBodyComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
+#include "../Components/ProjectileComponent.hpp"
 #include "../ECS/ECS.hpp"
 
 class ProjectileEmittingSystem : public System {
@@ -19,7 +20,7 @@ public:
         for (auto& entity: GetSystemEntities()) {
             auto& emitter = entity.GetComponent<ProjectileEmittingComponent>();
 
-            if (SDL_GetTicks() - emitter.emissionTime > emitter.lifespan) {
+            if (SDL_GetTicks() - emitter.emissionTime > emitter.frequency) {
                 const auto& transform = entity.GetComponent<TransformComponent>();
 
                 glm::vec2 projectilePosition = transform.position;
@@ -34,6 +35,7 @@ public:
                 projectile.AddComponent<RigidBodyComponent>(emitter.velocity);
                 projectile.AddComponent<SpriteComponent>("bullet", 4, 4, 4);
                 projectile.AddComponent<BoxColliderComponent>(4, 4);
+                projectile.AddComponent<ProjectileComponent>(emitter.lifespan, emitter.damage, emitter.affectable);
 
                 emitter.emissionTime = SDL_GetTicks();
             }

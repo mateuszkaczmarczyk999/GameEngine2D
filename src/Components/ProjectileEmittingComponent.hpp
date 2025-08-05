@@ -12,7 +12,7 @@ struct ProjectileEmittingComponent {
     bool affectable;
     int emissionTime;
 
-    ProjectileEmittingComponent(glm::vec2 velocity = glm::vec2(0), int frequency = 0, int lifespan = 0, int damage = 0, bool affectable = false) {
+    ProjectileEmittingComponent(glm::vec2 velocity = glm::vec2(0), int frequency = 0, int lifespan = 0, int damage = 0, bool affectable = true) {
         this->velocity = velocity;
         this->frequency = frequency;
         this->lifespan = lifespan;

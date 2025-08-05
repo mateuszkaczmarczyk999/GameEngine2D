@@ -19,6 +19,7 @@
 #include "../Systems/KeyboardMovementSystem.hpp"
 #include "../Systems/CameraFollowSystem.hpp"
 #include "../Systems/ProjectileEmittingSystem.hpp"
+#include "../Systems/ProjectileLifecycleSystem.hpp"
 
 #include "../Events/KeyPressedEvent.hpp"
 
@@ -158,7 +159,7 @@ void Game::LoadLevel() {
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
-    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(100.0, 0.0), 500, 1000, 10);
+    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(100.0, 0.0), 2000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
 
     Entity truck = registry->CreateEntity();
@@ -187,6 +188,7 @@ void Game::Setup() {
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
     registry->AddSystem<CameraFollowSystem>(cameraFrame);
     registry->AddSystem<ProjectileEmittingSystem>(registry.get());
+    registry->AddSystem<ProjectileLifecycleSystem>();
 
     LoadAssets();
     LoadMap();
@@ -230,6 +232,7 @@ void Game::Update() {
     registry->GetSystem<CameraFollowSystem>().Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<ProjectileEmittingSystem>().Update();
+    registry->GetSystem<ProjectileLifecycleSystem>().Update();
 }
 
 void Game::Render() {
