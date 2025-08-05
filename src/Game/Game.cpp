@@ -7,6 +7,7 @@
 #include "../Components/BoxColliderComponent.hpp"
 #include "../Components/KeyboardMovementComponent.hpp"
 #include "../Components/CameraFollowComponent.hpp"
+#include "../Components/ProjectileEmittingComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -16,6 +17,7 @@
 #include "../Systems/DamageSystem.hpp"
 #include "../Systems/KeyboardMovementSystem.hpp"
 #include "../Systems/CameraFollowSystem.hpp"
+#include "../Systems/ProjectileEmittingSystem.hpp"
 
 #include "../Events/KeyPressedEvent.hpp"
 
@@ -25,8 +27,6 @@
 
 #include <fstream>
 #include <string>
-
-#include "../Systems/DamageSystem.hpp"
 
 Game::Game() {
     isRunning = false;
@@ -101,6 +101,7 @@ void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
     assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
+    assetStore->AddTexture(renderer, "bullet", "./assets/images/bullet.png");
 }
 
 void Game::LoadMap() {
@@ -155,12 +156,13 @@ void Game::LoadLevel() {
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
+    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(100.0, 0.0), 500, 1000, 10);
 
     Entity truck = registry->CreateEntity();
 
     truck.AddComponent<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
-    truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 1);
+    truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
 
     Entity radar = registry->CreateEntity();
@@ -180,6 +182,7 @@ void Game::Setup() {
     registry->AddSystem<DamageSystem>(eventBus.get());
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
     registry->AddSystem<CameraFollowSystem>(cameraFrame);
+    registry->AddSystem<ProjectileEmittingSystem>(registry.get());
 
     LoadAssets();
     LoadMap();
@@ -222,6 +225,7 @@ void Game::Update() {
     registry->GetSystem<CollisionSystem>().Update();
     registry->GetSystem<CameraFollowSystem>().Update();
     registry->GetSystem<MovementSystem>().Update(deltaTime);
+    registry->GetSystem<ProjectileEmittingSystem>().Update();
 }
 
 void Game::Render() {

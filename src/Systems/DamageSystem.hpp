@@ -20,8 +20,8 @@ public:
     }
 
     void OnCollision(CollisionEvent &event) {
-        event.entityA.Kill();
-        event.entityB.Kill();
+        // event.entityA.Kill();
+        // event.entityB.Kill();
     }
 
     void Update() {
