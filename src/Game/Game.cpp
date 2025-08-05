@@ -175,7 +175,7 @@ void Game::Setup() {
     registry->AddSystem<MovementSystem>();
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>(eventBus.get());
-    registry->AddSystem<CollisionRenderSystem>(eventBus.get(), renderer, cameraFrame);
+    registry->AddSystem<CollisionRenderSystem>(renderer, cameraFrame, eventBus.get());
     registry->AddSystem<DamageSystem>(eventBus.get());
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
 

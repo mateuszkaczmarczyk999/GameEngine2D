@@ -9,10 +9,7 @@
 
 class CollisionRenderSystem : public System {
 public:
-    CollisionRenderSystem(EventBus* eventBus, SDL_Renderer* renderer, const SDL_Rect& cameraFrame) {
-        this->eventBus = eventBus;
-        this->renderer = renderer;
-        this->cameraFrame = cameraFrame;
+    CollisionRenderSystem(SDL_Renderer* renderer, const SDL_Rect& cameraFrame, EventBus* eventBus): renderer(renderer), cameraFrame(cameraFrame), eventBus(eventBus) {
         RequireComponent<TransformComponent>();
         RequireComponent<BoxColliderComponent>();
     };
@@ -43,9 +40,9 @@ public:
     };
 
 private:
-    EventBus* eventBus;
     SDL_Renderer* renderer;
-    SDL_Rect cameraFrame;
+    const SDL_Rect& cameraFrame;
+    EventBus* eventBus;
     std::array<int, 4> color = {0, 255, 0, 255};
     bool filled = false;
 
