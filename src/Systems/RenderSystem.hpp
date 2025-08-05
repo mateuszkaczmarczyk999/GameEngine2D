@@ -20,10 +20,7 @@ struct Renderable {
 
 class RenderSystem : public System {
 public:
-    RenderSystem(SDL_Renderer* renderer, const SDL_Rect& cameraFrame, AssetStore* assetStore) {
-        this->renderer = renderer;
-        this->cameraFrame = cameraFrame;
-        this->assetStore = assetStore;
+    RenderSystem(SDL_Renderer* renderer, const SDL_Rect& cameraFrame, AssetStore* assetStore): renderer(renderer), cameraFrame(cameraFrame), assetStore(assetStore) {
         RequireComponent<TransformComponent>();
         RequireComponent<SpriteComponent>();
     };
@@ -64,7 +61,7 @@ public:
     };
 private:
     SDL_Renderer* renderer;
-    SDL_Rect cameraFrame;
+    const SDL_Rect& cameraFrame;
     AssetStore* assetStore;
 };
 
