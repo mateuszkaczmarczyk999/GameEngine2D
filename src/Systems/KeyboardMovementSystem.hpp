@@ -10,8 +10,7 @@
 
 class KeyboardMovementSystem: public System {
 public:
-    KeyboardMovementSystem(EventBus* eventBus) {
-        this->eventBus = eventBus;
+    KeyboardMovementSystem(EventBus* eventBus): eventBus(eventBus) {
         RequireComponent<SpriteComponent>();
         RequireComponent<RigidBodyComponent>();
         RequireComponent<KeyboardMovementComponent>();

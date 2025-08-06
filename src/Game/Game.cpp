@@ -151,6 +151,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
+    chopper.AddComponent<ProjectileEmittingComponent>(200, 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
 
     Entity tank = registry->CreateEntity();
@@ -159,7 +160,7 @@ void Game::LoadLevel() {
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
-    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(100.0, 0.0), 2000, 3000, 10);
+    tank.AddComponent<ProjectileEmittingComponent>(400, 1000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
 
     Entity truck = registry->CreateEntity();
@@ -187,7 +188,7 @@ void Game::Setup() {
     registry->AddSystem<DamageSystem>(eventBus.get());
     registry->AddSystem<KeyboardMovementSystem>(eventBus.get());
     registry->AddSystem<CameraFollowSystem>(cameraFrame);
-    registry->AddSystem<ProjectileEmittingSystem>(registry.get());
+    registry->AddSystem<ProjectileEmittingSystem>(registry.get(), eventBus.get());
     registry->AddSystem<ProjectileLifecycleSystem>();
 
     LoadAssets();
@@ -197,6 +198,7 @@ void Game::Setup() {
     registry->GetSystem<CollisionRenderSystem>().SubscribeToEvents();
     registry->GetSystem<DamageSystem>().SubscribeToEvents();
     registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents();
+    registry->GetSystem<ProjectileEmittingSystem>().SubscribeToEvents();
 }
 
 void Game::ProcessInput() {
