@@ -40,7 +40,7 @@ private:
     EventBus* eventBus;
 
     void ProjectileSpawn(const Entity& entity, ProjectileEmittingComponent& emitter) {
-        if (SDL_GetTicks() - emitter.emissionTime > emitter.frequency) {
+        if (SDL_GetTicks() - emitter.emissionTime > emitter.cooldown) {
             const auto& transform = entity.GetComponent<TransformComponent>();
             const auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
             const auto& direction = glm::normalize(rigidBody.velocity);
