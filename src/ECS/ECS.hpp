@@ -46,6 +46,14 @@ public:
     template<typename T>
     T &GetComponent() const;
 
+    void AddTag(const std::string& tag) const;
+    bool HasTag(const std::string& tag) const;
+    void RemoveTag() const;
+
+    void AddGroup(const std::string& group);
+    bool HasGroup(const std::string& group) const;
+    void RemoveGroups() const;
+
     class Registry *registry;
 
 private:
@@ -161,6 +169,16 @@ public:
     template<typename T>
     T &GetSystem() const;
 
+    void AddTagToEntity(const Entity& entity, const std::string& tag);
+    bool EntityHasTag(const Entity& entity, const std::string& tag) const;
+    std::optional<Entity> GetEntityByTag(const std::string& tag) const;
+    void RemoveTagsFromEntity(const Entity& entity);
+
+    void AddEntityToGroup(const Entity& entity, const std::string &group);
+    bool EntityBelongsToGroup(const Entity& entity, const std::string& group) const;
+    std::vector<Entity> GetEntitiesByGroup(const std::string& group) const;
+    void RemoveEntityFromGroups(const Entity& entity);
+
     void AddEntityToSystems(Entity entity);
 
     void RemoveEntityFromSystems(Entity entity);
@@ -170,6 +188,12 @@ private:
     std::deque<int> freeIds;
     std::set<Entity> entitiesToBeAdded;
     std::set<Entity> entitiesToBeKilled;
+
+    std::unordered_map<int, std::string> tagsPerEntities;
+    std::unordered_map<std::string, Entity> entitiesPerTags;
+
+    std::unordered_map<int, std::set<std::string>> groupsPerEntities;
+    std::unordered_map<std::string, std::set<Entity>> entitiesPerGroups;
 
     std::vector<std::shared_ptr<IPool> > componentPools;
     std::vector<Signature> entityComponentSignatures;

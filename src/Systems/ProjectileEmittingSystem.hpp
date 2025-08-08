@@ -58,6 +58,7 @@ private:
             projectile.AddComponent<SpriteComponent>("bullet", 4, 4, 4);
             projectile.AddComponent<BoxColliderComponent>(4, 4);
             projectile.AddComponent<ProjectileComponent>(emitter.lifespan, emitter.damage, emitter.affectable);
+            projectile.AddGroup("Projectiles");
 
             emitter.emissionTime = SDL_GetTicks();
         }

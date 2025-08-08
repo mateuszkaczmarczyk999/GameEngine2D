@@ -132,6 +132,7 @@ void Game::LoadMap() {
             Entity tile = registry->CreateEntity();
             tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
             tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, false, tileXOffset, tileYOffset);
+            tile.AddGroup("Tiles");
 
             start = end + 1;
             row++;
@@ -148,11 +149,13 @@ void Game::LoadLevel() {
     chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
     chopper.AddComponent<RigidBodyComponent>();
     chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 2);
+    chopper.AddComponent<BoxColliderComponent>(32, 32);
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
     chopper.AddComponent<ProjectileEmittingComponent>(200, 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
+    chopper.AddTag("Player");
 
     Entity tank = registry->CreateEntity();
 
@@ -162,6 +165,7 @@ void Game::LoadLevel() {
     tank.AddComponent<BoxColliderComponent>(32, 32);
     tank.AddComponent<ProjectileEmittingComponent>(400, 1000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
+    tank.AddGroup("Enemies");
 
     Entity truck = registry->CreateEntity();
 
@@ -170,6 +174,7 @@ void Game::LoadLevel() {
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
     truck.AddComponent<HealthComponent>(100);
+    truck.AddGroup("Enemies");
 
     Entity radar = registry->CreateEntity();
 
@@ -177,6 +182,7 @@ void Game::LoadLevel() {
     radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     radar.AddComponent<SpriteComponent>("radar", 64, 64, 3, true);
     radar.AddComponent<AnimationComponent>(8, 5, true);
+    radar.AddGroup("HUD");
 }
 
 void Game::Setup() {
