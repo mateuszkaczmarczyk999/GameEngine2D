@@ -45,7 +45,7 @@ public:
             auto& health = playerEntity.GetComponent<HealthComponent>();
             health.healthPercentage -= projectile.damage;
             projectileEntity.Kill();
-            if (health.healthPercentage < 0) playerEntity.Kill();
+            if (health.healthPercentage <= 0) playerEntity.Kill();
         }
     }
 
@@ -55,7 +55,7 @@ public:
             auto& health = enemyEntity.GetComponent<HealthComponent>();
             health.healthPercentage -= projectile.damage;
             projectileEntity.Kill();
-            if (health.healthPercentage < 0) enemyEntity.Kill();
+            if (health.healthPercentage <= 0) enemyEntity.Kill();
         }
     }
 
