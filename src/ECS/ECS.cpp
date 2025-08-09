@@ -53,7 +53,7 @@ Entity Registry::CreateEntity() {
         entityId = freeIds.front();
         freeIds.pop_front();
     } else {
-        entityId = countEntitis++;
+        entityId = countEntities++;
         if (entityId >= entityComponentSignatures.size()) {
             entityComponentSignatures.resize(entityId + 1);
         }
@@ -186,7 +186,15 @@ void Registry::Update() {
     for (auto entity: entitiesToBeKilled) {
         RemoveEntityFromSystems(entity);
         entityComponentSignatures[entity.GetId()].reset();
+
+        for (const auto& pool: componentPools) {
+            pool->RemoveEntityFromPool(entity.GetId());
+        }
+
         freeIds.push_back(entity.GetId());
+
+        RemoveTagsFromEntity(entity);
+        RemoveEntityFromGroups(entity);
     }
     entitiesToBeKilled.clear();
 }
