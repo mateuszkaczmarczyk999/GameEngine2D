@@ -10,6 +10,7 @@
 #include "../Components/ProjectileEmittingComponent.hpp"
 #include "../Components/HealthComponent.hpp"
 #include "../Components/TextLabelComponent.hpp"
+#include "../Components/HealthLabelComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -22,6 +23,7 @@
 #include "../Systems/ProjectileEmittingSystem.hpp"
 #include "../Systems/ProjectileLifecycleSystem.hpp"
 #include "../Systems/TextRenderSystem.hpp"
+#include "../Systems/HealthRenderSystem.hpp"
 
 #include "../Settings/Settings.hpp"
 
@@ -116,6 +118,7 @@ void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
     assetStore->AddTexture(renderer, "bullet", "./assets/images/bullet.png");
     assetStore->AddFont("charriot", "./assets/fonts/charriot.ttf", 24);
+    assetStore->AddFont("arial", "./assets/fonts/arial.ttf", 14);
 }
 
 void Game::LoadMap() {
@@ -167,6 +170,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<CameraFollowComponent>();
     chopper.AddComponent<ProjectileEmittingComponent>(200, 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
+    chopper.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
     chopper.AddTag("Player");
 
     Entity tank = registry->CreateEntity();
@@ -177,6 +181,7 @@ void Game::LoadLevel() {
     tank.AddComponent<BoxColliderComponent>(32, 32);
     tank.AddComponent<ProjectileEmittingComponent>(400, 1000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
+    tank.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
     tank.AddGroup("Enemies");
 
     Entity truck = registry->CreateEntity();
@@ -186,6 +191,7 @@ void Game::LoadLevel() {
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
     truck.AddComponent<HealthComponent>(100);
+    truck.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
     truck.AddGroup("Enemies");
 
     Entity radar = registry->CreateEntity();
@@ -212,6 +218,7 @@ void Game::Setup() {
     registry->AddSystem<ProjectileEmittingSystem>(registry.get(), eventBus.get());
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<TextRenderSystem>(renderer, cameraFrame, assetStore.get());
+    registry->AddSystem<HealthRenderSystem>(renderer, cameraFrame, assetStore.get());
 
     LoadAssets();
     LoadMap();
@@ -265,6 +272,7 @@ void Game::Render() {
 
     registry->GetSystem<RenderSystem>().Update();
     registry->GetSystem<TextRenderSystem>().Update();
+    registry->GetSystem<HealthRenderSystem>().Update();
     if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update();
 
     SDL_RenderPresent(renderer);
