@@ -39,6 +39,7 @@ public:
             };
 
             SDL_RenderCopy(this->renderer, texture, NULL, &destRect);
+            SDL_DestroyTexture(texture);
         }
     };
 private:
