@@ -117,8 +117,9 @@ void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
     assetStore->AddTexture(renderer, "bullet", "./assets/images/bullet.png");
-    assetStore->AddFont("charriot", "./assets/fonts/charriot.ttf", 24);
-    assetStore->AddFont("arial", "./assets/fonts/arial.ttf", 14);
+    assetStore->AddFont("charriot-title", "./assets/fonts/charriot.ttf", 24);
+    assetStore->AddFont("charriot-s", "./assets/fonts/charriot.ttf", 16);
+    assetStore->AddFont("arial-xs", "./assets/fonts/arial.ttf", 6);
 }
 
 void Game::LoadMap() {
@@ -170,7 +171,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<CameraFollowComponent>();
     chopper.AddComponent<ProjectileEmittingComponent>(200, 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
-    chopper.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
+    chopper.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     chopper.AddTag("Player");
 
     Entity tank = registry->CreateEntity();
@@ -181,7 +182,7 @@ void Game::LoadLevel() {
     tank.AddComponent<BoxColliderComponent>(32, 32);
     tank.AddComponent<ProjectileEmittingComponent>(400, 1000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
-    tank.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
+    tank.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     tank.AddGroup("Enemies");
 
     Entity truck = registry->CreateEntity();
@@ -191,7 +192,7 @@ void Game::LoadLevel() {
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
     truck.AddComponent<HealthComponent>(100);
-    truck.AddComponent<HealthLabelComponent>(glm::vec2(5.0, -5.0));
+    truck.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     truck.AddGroup("Enemies");
 
     Entity radar = registry->CreateEntity();
@@ -203,7 +204,7 @@ void Game::LoadLevel() {
     radar.AddGroup("HUD");
 
     Entity label = registry->CreateEntity();
-    label.AddComponent<TextLabelComponent>("CHOPPER 1.0", glm::vec2(windowWidth/2 - 80, 20), "charriot", RGBA::ColorName::Green, true);
+    label.AddComponent<TextLabelComponent>("CHOPPER 1.0", glm::vec2(windowWidth/2 - 80, 20), "charriot-title", RGBA::ColorName::Green, true);
 }
 
 void Game::Setup() {
