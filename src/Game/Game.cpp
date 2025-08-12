@@ -9,6 +9,7 @@
 #include "../Components/CameraFollowComponent.hpp"
 #include "../Components/ProjectileEmittingComponent.hpp"
 #include "../Components/HealthComponent.hpp"
+#include "../Components/TextLabelComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -20,11 +21,15 @@
 #include "../Systems/CameraFollowSystem.hpp"
 #include "../Systems/ProjectileEmittingSystem.hpp"
 #include "../Systems/ProjectileLifecycleSystem.hpp"
+#include "../Systems/TextRenderSystem.hpp"
+
+#include "../Settings/Settings.hpp"
 
 #include "../Events/KeyPressedEvent.hpp"
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 
 #include <fstream>
@@ -48,6 +53,12 @@ void Game::Initialize() {
         Logger::Err("Error with initializing SDL.");
         return;
     }
+
+    if (TTF_Init() !=0) {
+        Logger::Err("Error with initializing TTF.");
+        return;
+    }
+
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
     windowWidth = 800; //displayMode.w;
@@ -104,6 +115,7 @@ void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
     assetStore->AddTexture(renderer, "bullet", "./assets/images/bullet.png");
+    assetStore->AddFont("charriot", "./assets/fonts/charriot.ttf", 24);
 }
 
 void Game::LoadMap() {
@@ -183,6 +195,9 @@ void Game::LoadLevel() {
     radar.AddComponent<SpriteComponent>("radar", 64, 64, 3, true);
     radar.AddComponent<AnimationComponent>(8, 5, true);
     radar.AddGroup("HUD");
+
+    Entity label = registry->CreateEntity();
+    label.AddComponent<TextLabelComponent>("CHOPPER 1.0", glm::vec2(windowWidth/2 - 80, 20), "charriot", RGBA::ColorName::Green, true);
 }
 
 void Game::Setup() {
@@ -196,6 +211,7 @@ void Game::Setup() {
     registry->AddSystem<CameraFollowSystem>(cameraFrame);
     registry->AddSystem<ProjectileEmittingSystem>(registry.get(), eventBus.get());
     registry->AddSystem<ProjectileLifecycleSystem>();
+    registry->AddSystem<TextRenderSystem>(renderer, cameraFrame, assetStore.get());
 
     LoadAssets();
     LoadMap();
@@ -248,6 +264,7 @@ void Game::Render() {
     SDL_RenderClear(renderer);
 
     registry->GetSystem<RenderSystem>().Update();
+    registry->GetSystem<TextRenderSystem>().Update();
     if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update();
 
     SDL_RenderPresent(renderer);
