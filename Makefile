@@ -10,13 +10,15 @@ LANG_STD = -std=c++17
 COMPILER_FLAGS = -Wall -Wfatal-errors
 
 INCLUDE_PATHS = -I"./libs" \
-				-I/opt/homebrew/include
+				-I/opt/homebrew/include \
+				-I/opt/homebrew/include/SDL2
 
-SOURCE = src/*.cpp \
-		 src/Game/*.cpp \
-		 src/Logger/*.cpp \
-		 src/ECS/*.cpp \
-		 src/AssetStore/*.cpp
+SOURCE = ./src/*.cpp \
+		 ./src/Game/*.cpp \
+		 ./src/Logger/*.cpp \
+		 ./src/ECS/*.cpp \
+		 ./src/AssetStore/*.cpp \
+		 ./libs/imgui/*.cpp
 
 LINKER_FLAGS = -lSDL2 \
 			   -lSDL2_image \

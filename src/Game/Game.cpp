@@ -32,6 +32,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_sdl2.h>
+#include <imgui/imgui_impl_sdlrenderer2.h>
 #include <glm/glm.hpp>
 
 #include <fstream>
@@ -63,8 +66,8 @@ void Game::Initialize() {
 
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    windowWidth = 800; //displayMode.w;
-    windowHeight = 800; //displayMode.h;
+    windowWidth = 1100; //displayMode.w;
+    windowHeight = 1100; //displayMode.h;
     // windowWidth = displayMode.w - 50;
     // windowHeight = displayMode.h - 50;
 
@@ -91,6 +94,13 @@ void Game::Initialize() {
     }
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     // SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer2_Init(renderer);
 
     cameraFrame.x = 0;
     cameraFrame.y = 0;
@@ -234,6 +244,14 @@ void Game::Setup() {
 void Game::ProcessInput() {
     SDL_Event sdlEvent;
     while (SDL_PollEvent(&sdlEvent)) {
+        ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+        ImGuiIO& io = ImGui::GetIO();
+        int mouseX, mouseY;
+        const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+        io.MousePos = ImVec2(mouseX, mouseY);
+        io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+        io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
         switch (sdlEvent.type) {
             case SDL_QUIT:
                 isRunning = false;
@@ -274,12 +292,27 @@ void Game::Render() {
     registry->GetSystem<RenderSystem>().Update();
     registry->GetSystem<TextRenderSystem>().Update();
     registry->GetSystem<HealthRenderSystem>().Update();
-    if (debugMode) registry->GetSystem<CollisionRenderSystem>().Update();
+    if (debugMode) {
+        registry->GetSystem<CollisionRenderSystem>().Update();
+
+        ImGui_ImplSDLRenderer2_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::ShowDemoWindow();
+        ImGui::Render();
+
+        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
+
+    }
 
     SDL_RenderPresent(renderer);
 }
 
 void Game::Destroy() {
+    ImGui_ImplSDLRenderer2_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
