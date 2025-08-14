@@ -44,6 +44,10 @@ private:
             const auto& transform = entity.GetComponent<TransformComponent>();
             const auto& rigidBody = entity.GetComponent<RigidBodyComponent>();
             const auto& direction = glm::normalize(rigidBody.velocity);
+            const glm::mat2 rotationMatrix {
+                direction.x, direction.y,
+                -direction.y, direction.x,
+            };
 
             glm::vec2 projectilePosition = transform.position;
             if (entity.HasComponent<SpriteComponent>()) {
@@ -51,10 +55,7 @@ private:
                 projectilePosition.x += (transform.scale.x * sprite.width / 2);
                 projectilePosition.y += (transform.scale.y * sprite.height / 2);
             }
-
-            glm::vec2 projectileVelocity;
-            projectileVelocity.x = emitter.velocity.x * direction.x;
-            projectileVelocity.y = emitter.velocity.y * direction.y;
+            glm::vec2 projectileVelocity = rotationMatrix * emitter.velocity;
 
             Entity projectile = this->registry->CreateEntity();
             projectile.AddComponent<TransformComponent>(projectilePosition);
