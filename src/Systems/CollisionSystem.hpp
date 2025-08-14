@@ -13,8 +13,8 @@ struct AABB {
     glm::vec2 max;
 
     AABB(const glm::vec2 &origin, int width, int height) {
-        min = origin - glm::vec2(width / 2.0f, height / 2.0f);
-        max = origin + glm::vec2(width / 2.0f, height / 2.0f);
+        min = origin;
+        max = origin + glm::vec2(width, height);
     };
 };
 
@@ -43,7 +43,7 @@ public:
                 auto &transformB = entityB.GetComponent<TransformComponent>();
                 auto &colliderB = entityB.GetComponent<BoxColliderComponent>();
 
-                AABB aabbForEntityB(transformB.position + colliderB.offset, colliderB.width, colliderB.height);
+                AABB aabbForEntityB(transformB.position + + colliderB.offset, colliderB.width, colliderB.height);
 
                 if (CheckAABBCollision(aabbForEntityA, aabbForEntityB)) {
                     // Handle collision logic here
