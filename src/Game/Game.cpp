@@ -24,6 +24,7 @@
 #include "../Systems/ProjectileLifecycleSystem.hpp"
 #include "../Systems/TextRenderSystem.hpp"
 #include "../Systems/HealthRenderSystem.hpp"
+#include "../Systems/GUIRenderSystem.hpp"
 
 #include "../Settings/Settings.hpp"
 
@@ -66,8 +67,8 @@ void Game::Initialize() {
 
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    windowWidth = 1100; //displayMode.w;
-    windowHeight = 1100; //displayMode.h;
+    windowWidth = 800; //displayMode.w;
+    windowHeight = 800; //displayMode.h;
     // windowWidth = displayMode.w - 50;
     // windowHeight = displayMode.h - 50;
 
@@ -231,6 +232,7 @@ void Game::Setup() {
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<TextRenderSystem>(renderer, cameraFrame, assetStore.get());
     registry->AddSystem<HealthRenderSystem>(renderer, cameraFrame, assetStore.get());
+    registry->AddSystem<GUIRenderSystem>(renderer, registry.get());
 
     LoadAssets();
     LoadMap();
@@ -295,16 +297,7 @@ void Game::Render() {
     registry->GetSystem<HealthRenderSystem>().Update();
     if (debugMode) {
         registry->GetSystem<CollisionRenderSystem>().Update();
-
-        ImGui_ImplSDLRenderer2_NewFrame();
-        ImGui_ImplSDL2_NewFrame();
-        ImGui::NewFrame();
-
-        ImGui::ShowDemoWindow();
-        ImGui::Render();
-
-        ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData(), renderer);
-
+        registry->GetSystem<GUIRenderSystem>().Update();
     }
 
     SDL_RenderPresent(renderer);
