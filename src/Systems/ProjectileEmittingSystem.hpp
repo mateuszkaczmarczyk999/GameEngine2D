@@ -52,9 +52,13 @@ private:
                 projectilePosition.y += (transform.scale.y * sprite.height / 2);
             }
 
+            glm::vec2 projectileVelocity;
+            projectileVelocity.x = emitter.velocity.x * direction.x;
+            projectileVelocity.y = emitter.velocity.y * direction.y;
+
             Entity projectile = this->registry->CreateEntity();
             projectile.AddComponent<TransformComponent>(projectilePosition);
-            projectile.AddComponent<RigidBodyComponent>(emitter.velocityScalar * direction);
+            projectile.AddComponent<RigidBodyComponent>(projectileVelocity);
             projectile.AddComponent<SpriteComponent>("bullet", 4, 4, 4);
             projectile.AddComponent<BoxColliderComponent>(4, 4);
             projectile.AddComponent<ProjectileComponent>(emitter.lifespan, emitter.damage, emitter.affectable);

@@ -5,7 +5,7 @@
 #include <SDL2/SDL.h>
 
 struct ProjectileEmittingComponent {
-    float velocityScalar;
+    glm::vec2 velocity;
     int cooldown;
     int lifespan;
     int damage;
@@ -13,8 +13,8 @@ struct ProjectileEmittingComponent {
     bool playerControlled;
     int emissionTime;
 
-    ProjectileEmittingComponent(float velocityScalar = 100, int cooldown = 0, int lifespan = 0, int damage = 0, bool playerControlled = false, bool affectable = true) {
-        this->velocityScalar = velocityScalar;
+    ProjectileEmittingComponent(glm::vec2 velocity = glm::vec2(0), int cooldown = 0, int lifespan = 0, int damage = 0, bool playerControlled = false, bool affectable = true) {
+        this->velocity = velocity;
         this->cooldown = cooldown;
         this->lifespan = lifespan;
         this->damage = damage;

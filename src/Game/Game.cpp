@@ -179,7 +179,7 @@ void Game::LoadLevel() {
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
-    chopper.AddComponent<ProjectileEmittingComponent>(200, 100, 3000, 10, true, false);
+    chopper.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 100), 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
     chopper.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     chopper.AddTag("Player");
@@ -190,7 +190,7 @@ void Game::LoadLevel() {
     tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tank.AddComponent<BoxColliderComponent>(32, 32);
-    tank.AddComponent<ProjectileEmittingComponent>(400, 1000, 3000, 10);
+    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 500.0), 1000, 3000, 10);
     tank.AddComponent<HealthComponent>(100);
     tank.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     tank.AddGroup("Enemies");
@@ -201,6 +201,7 @@ void Game::LoadLevel() {
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
+    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 100.0), 1000, 3000, 10);
     truck.AddComponent<HealthComponent>(100);
     truck.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     truck.AddGroup("Enemies");
