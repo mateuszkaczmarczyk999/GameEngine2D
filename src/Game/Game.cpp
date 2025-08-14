@@ -42,6 +42,7 @@
 
 #include <fstream>
 #include <string>
+#include <unordered_set>
 
 Game::Game() {
     isRunning = false;
@@ -161,6 +162,7 @@ void Game::LoadMap() {
     float tileSize = 32.0;
     float tileScale = 2.0;
     int col = 0;
+    std::unordered_set<int> waterTiles{9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22};
     while (std::getline(file, line)) {
         size_t start = 0;
         size_t end = 0;
@@ -174,10 +176,14 @@ void Game::LoadMap() {
             auto positionX = tileSize * tileScale * row;
             auto positionY = tileSize * tileScale * col;
 
+            Logger::Err("Tiles id: " + std::to_string(tilePos));
             Entity tile = registry->CreateEntity();
             tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
             tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, false, tileXOffset, tileYOffset);
             tile.AddGroup("Tiles");
+
+            if (waterTiles.find(tilePos) != waterTiles.end()) tile.AddGroup("Water");
+            else tile.AddGroup("Ground");
 
             start = end + 1;
             row++;
@@ -205,7 +211,7 @@ void Game::LoadLevel() {
 
     Entity tankA = registry->CreateEntity();
 
-    tankA.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tankA.AddComponent<TransformComponent>(glm::vec2(160.0, 512.0), glm::vec2(1.0, 1.0), 0.0);
     tankA.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tankA.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tankA.AddComponent<BoxColliderComponent>(32, 32);
@@ -217,8 +223,8 @@ void Game::LoadLevel() {
 
     Entity tankB = registry->CreateEntity();
 
-    tankB.AddComponent<TransformComponent>(glm::vec2(250.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
-    tankB.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
+    tankB.AddComponent<TransformComponent>(glm::vec2(550.0, 650.0), glm::vec2(1.0, 1.0), 0.0);
+    tankB.AddComponent<RigidBodyComponent>(glm::vec2(15.0, 0.0));
     tankB.AddComponent<SpriteComponent>("tank-panther-right", 32, 32, 1);
     tankB.AddComponent<BoxColliderComponent>(32, 32);
     tankB.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 0.0), 1000, 3000, 10);
@@ -229,7 +235,7 @@ void Game::LoadLevel() {
 
     Entity truck = registry->CreateEntity();
 
-    truck.AddComponent<TransformComponent>(glm::vec2(500.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    truck.AddComponent<TransformComponent>(glm::vec2(780.0, 750.0), glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
@@ -265,7 +271,7 @@ void Game::Setup() {
     registry->AddSystem<TextRenderSystem>(renderer, cameraFrame, assetStore.get());
     registry->AddSystem<HealthRenderSystem>(renderer, cameraFrame, assetStore.get());
     registry->AddSystem<FlipSpriteSystem>();
-    registry->AddSystem<GUIRenderSystem>(renderer, registry.get());
+    registry->AddSystem<GUIRenderSystem>(renderer, registry.get(), cameraFrame);
 
     LoadAssets();
     LoadMap();
