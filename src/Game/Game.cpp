@@ -11,6 +11,7 @@
 #include "../Components/HealthComponent.hpp"
 #include "../Components/TextLabelComponent.hpp"
 #include "../Components/HealthLabelComponent.hpp"
+#include "../Components/FlipSpriteComponent.hpp"
 
 #include "../Systems/MovementSystem.hpp"
 #include "../Systems/RenderSystem.hpp"
@@ -24,6 +25,7 @@
 #include "../Systems/ProjectileLifecycleSystem.hpp"
 #include "../Systems/TextRenderSystem.hpp"
 #include "../Systems/HealthRenderSystem.hpp"
+#include "../Systems/FlipSpriteSystem.hpp"
 #include "../Systems/GUIRenderSystem.hpp"
 
 #include "../Settings/Settings.hpp"
@@ -123,8 +125,24 @@ void Game::Run() {
 
 void Game::LoadAssets() {
     assetStore->AddTexture(renderer, "jungle", "./assets/tilemaps/jungle.png");
+    assetStore->AddTexture(renderer, "landing-base", "./assets/images/landing-base.png");
+    assetStore->AddTexture(renderer, "tree", "./assets/images/tree.png");
+    //Tiger tanks
     assetStore->AddTexture(renderer, "tank-tiger-right", "./assets/images/tank-tiger-right.png");
+    assetStore->AddTexture(renderer, "tank-tiger-down", "./assets/images/tank-tiger-down.png");
+    assetStore->AddTexture(renderer, "tank-tiger-left", "./assets/images/tank-tiger-left.png");
+    assetStore->AddTexture(renderer, "tank-tiger-up", "./assets/images/tank-tiger-up.png");
+    //Panther tanks
+    assetStore->AddTexture(renderer, "tank-panther-right", "./assets/images/tank-panther-right.png");
+    assetStore->AddTexture(renderer, "tank-panther-down", "./assets/images/tank-panther-down.png");
+    assetStore->AddTexture(renderer, "tank-panther-left", "./assets/images/tank-panther-left.png");
+    assetStore->AddTexture(renderer, "tank-panther-up", "./assets/images/tank-panther-up.png");
+    //Trucks
+    assetStore->AddTexture(renderer, "truck-ford-right", "./assets/images/truck-ford-right.png");
+    assetStore->AddTexture(renderer, "truck-ford-down", "./assets/images/truck-ford-down.png");
     assetStore->AddTexture(renderer, "truck-ford-left", "./assets/images/truck-ford-left.png");
+    assetStore->AddTexture(renderer, "truck-ford-up", "./assets/images/truck-ford-up.png");
+
     assetStore->AddTexture(renderer, "chopper", "./assets/images/chopper-spritesheet.png");
     assetStore->AddTexture(renderer, "radar", "./assets/images/radar.png");
     assetStore->AddTexture(renderer, "bullet", "./assets/images/bullet.png");
@@ -180,21 +198,34 @@ void Game::LoadLevel() {
     chopper.AddComponent<AnimationComponent>(2, 15, true);
     chopper.AddComponent<KeyboardMovementComponent>(glm::vec2(0.0, -80.0), glm::vec2(80.0, 0.0), glm::vec2(0.0, 80.0), glm::vec2(-80.0, 0.0));
     chopper.AddComponent<CameraFollowComponent>();
-    chopper.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 100.0), 100, 3000, 10, true, false);
+    chopper.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 0.0), 100, 3000, 10, true, false);
     chopper.AddComponent<HealthComponent>(100);
     chopper.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
     chopper.AddTag("Player");
 
-    Entity tank = registry->CreateEntity();
+    Entity tankA = registry->CreateEntity();
 
-    tank.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
-    tank.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
-    tank.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
-    tank.AddComponent<BoxColliderComponent>(32, 32);
-    tank.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, -250.0), 1000, 3000, 10);
-    tank.AddComponent<HealthComponent>(100);
-    tank.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
-    tank.AddGroup("Enemies");
+    tankA.AddComponent<TransformComponent>(glm::vec2(50.0, 50.0), glm::vec2(1.0, 1.0), 0.0);
+    tankA.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
+    tankA.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
+    tankA.AddComponent<BoxColliderComponent>(32, 32);
+    tankA.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 0.0), 1000, 3000, 10);
+    tankA.AddComponent<HealthComponent>(100);
+    tankA.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
+    tankA.AddComponent<FlipSpriteComponent>("tank-tiger");
+    tankA.AddGroup("Enemies");
+
+    Entity tankB = registry->CreateEntity();
+
+    tankB.AddComponent<TransformComponent>(glm::vec2(250.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
+    tankB.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
+    tankB.AddComponent<SpriteComponent>("tank-panther-right", 32, 32, 1);
+    tankB.AddComponent<BoxColliderComponent>(32, 32);
+    tankB.AddComponent<ProjectileEmittingComponent>(glm::vec2(500.0, 0.0), 1000, 3000, 10);
+    tankB.AddComponent<HealthComponent>(100);
+    tankB.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
+    tankB.AddComponent<FlipSpriteComponent>("tank-panther");
+    tankB.AddGroup("Enemies");
 
     Entity truck = registry->CreateEntity();
 
@@ -202,9 +233,10 @@ void Game::LoadLevel() {
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
     truck.AddComponent<BoxColliderComponent>(32, 32);
-    truck.AddComponent<ProjectileEmittingComponent>(glm::vec2(250.0, 500.0), 1000, 3000, 10);
+    truck.AddComponent<ProjectileEmittingComponent>(glm::vec2(250.0, -250), 1000, 3000, 10);
     truck.AddComponent<HealthComponent>(100);
     truck.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
+    truck.AddComponent<FlipSpriteComponent>("truck-ford");
     truck.AddGroup("Enemies");
 
     Entity radar = registry->CreateEntity();
@@ -232,6 +264,7 @@ void Game::Setup() {
     registry->AddSystem<ProjectileLifecycleSystem>();
     registry->AddSystem<TextRenderSystem>(renderer, cameraFrame, assetStore.get());
     registry->AddSystem<HealthRenderSystem>(renderer, cameraFrame, assetStore.get());
+    registry->AddSystem<FlipSpriteSystem>();
     registry->AddSystem<GUIRenderSystem>(renderer, registry.get());
 
     LoadAssets();
@@ -286,6 +319,7 @@ void Game::Update() {
     registry->GetSystem<MovementSystem>().Update(deltaTime);
     registry->GetSystem<ProjectileEmittingSystem>().Update();
     registry->GetSystem<ProjectileLifecycleSystem>().Update();
+    registry->GetSystem<FlipSpriteSystem>().Update();
 }
 
 void Game::Render() {
