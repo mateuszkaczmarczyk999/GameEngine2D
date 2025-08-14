@@ -195,9 +195,12 @@ void Game::LoadMap() {
 }
 
 void Game::LoadLevel() {
-    Entity chopper = registry->CreateEntity();
+    Entity startBase = registry->CreateEntity();
+    startBase.AddComponent<TransformComponent>(glm::vec2(85, 85), glm::vec2(1.0, 1.0), 0.0);
+    startBase.AddComponent<SpriteComponent>("landing-base", 32, 32);
 
-    chopper.AddComponent<TransformComponent>(glm::vec2(150.0, 150.0), glm::vec2(1.0, 1.0), 0.0);
+    Entity chopper = registry->CreateEntity();
+    chopper.AddComponent<TransformComponent>(glm::vec2(85.0, 85.0), glm::vec2(1.0, 1.0), 0.0);
     chopper.AddComponent<RigidBodyComponent>();
     chopper.AddComponent<SpriteComponent>("chopper", 32, 32, 2);
     chopper.AddComponent<BoxColliderComponent>(32, 32);
@@ -210,8 +213,7 @@ void Game::LoadLevel() {
     chopper.AddTag("Player");
 
     Entity tankA = registry->CreateEntity();
-
-    tankA.AddComponent<TransformComponent>(glm::vec2(160.0, 512.0), glm::vec2(1.0, 1.0), 0.0);
+    tankA.AddComponent<TransformComponent>(glm::vec2(160.0, 500.0), glm::vec2(1.0, 1.0), 0.0);
     tankA.AddComponent<RigidBodyComponent>(glm::vec2(10.0, 0.0));
     tankA.AddComponent<SpriteComponent>("tank-tiger-right", 32, 32, 1);
     tankA.AddComponent<BoxColliderComponent>(32, 32);
@@ -222,7 +224,6 @@ void Game::LoadLevel() {
     tankA.AddGroup("Enemies");
 
     Entity tankB = registry->CreateEntity();
-
     tankB.AddComponent<TransformComponent>(glm::vec2(550.0, 650.0), glm::vec2(1.0, 1.0), 0.0);
     tankB.AddComponent<RigidBodyComponent>(glm::vec2(15.0, 0.0));
     tankB.AddComponent<SpriteComponent>("tank-panther-right", 32, 32, 1);
@@ -234,7 +235,6 @@ void Game::LoadLevel() {
     tankB.AddGroup("Enemies");
 
     Entity truck = registry->CreateEntity();
-
     truck.AddComponent<TransformComponent>(glm::vec2(780.0, 750.0), glm::vec2(1.0, 1.0), 0.0);
     truck.AddComponent<RigidBodyComponent>(glm::vec2(-20.0, 0.0));
     truck.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
@@ -245,13 +245,34 @@ void Game::LoadLevel() {
     truck.AddComponent<FlipSpriteComponent>("truck-ford");
     truck.AddGroup("Enemies");
 
-    Entity radar = registry->CreateEntity();
+    Entity truckB = registry->CreateEntity();
+    truckB.AddComponent<TransformComponent>(glm::vec2(252.0, 115.0), glm::vec2(1.0, 1.0), 0.0);
+    truckB.AddComponent<RigidBodyComponent>(glm::vec2(-2.0, 0.0));
+    truckB.AddComponent<SpriteComponent>("truck-ford-left", 32, 32, 4);
+    truckB.AddComponent<BoxColliderComponent>(32, 32);
+    truckB.AddComponent<ProjectileEmittingComponent>(glm::vec2(250.0, -250), 1000, 3000, 10);
+    truckB.AddComponent<HealthComponent>(100);
+    truckB.AddComponent<HealthLabelComponent>("charriot-s", "arial-xs", glm::vec2(5.0, -5.0));
+    truckB.AddComponent<FlipSpriteComponent>("truck-ford");
+    truckB.AddGroup("Enemies");
 
+    Entity radar = registry->CreateEntity();
     radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
-    radar.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
     radar.AddComponent<SpriteComponent>("radar", 64, 64, 3, true);
     radar.AddComponent<AnimationComponent>(8, 5, true);
     radar.AddGroup("HUD");
+
+    Entity treeA = registry->CreateEntity();
+    treeA.AddComponent<TransformComponent>(glm::vec2(530, 650), glm::vec2(1.0, 1.0), 0.0);
+    treeA.AddComponent<SpriteComponent>("tree", 16, 32);
+    treeA.AddComponent<BoxColliderComponent>(16, 32);
+    treeA.AddGroup("Obstacles");
+
+    Entity treeB = registry->CreateEntity();
+    treeB.AddComponent<TransformComponent>(glm::vec2(730, 650), glm::vec2(1.0, 1.0), 0.0);
+    treeB.AddComponent<SpriteComponent>("tree", 16, 32);
+    treeB.AddComponent<BoxColliderComponent>(16, 32);
+    treeB.AddGroup("Obstacles");
 
     Entity label = registry->CreateEntity();
     label.AddComponent<TextLabelComponent>("CHOPPER 1.0", glm::vec2(windowWidth/2 - 80, 20), "charriot-title", RGBA::ColorName::Green, true);
