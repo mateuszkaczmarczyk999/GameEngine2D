@@ -17,27 +17,20 @@ public:
     ~Game();
 
     void Initialize();
-
     void Run();
-
     void Setup();
-
     void LoadAssets();
-
     void LoadMap();
-
     void LoadLevel();
-
     void ProcessInput();
-
     void Update();
-
     void Render();
-
     void Destroy();
 
-    int windowWidth;
-    int windowHeight;
+    static int windowWidth;
+    static int windowHeight;
+    static int mapWidth;
+    static int mapHeight;
 
 private:
     int pravFrameTimestamp = 0;

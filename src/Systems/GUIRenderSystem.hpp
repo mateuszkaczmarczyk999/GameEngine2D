@@ -41,8 +41,8 @@ public:
             }
             ImGui::Spacing();
             if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
-                ImGui::SliderInt("position x", &positionX, 0, 1200);
-                ImGui::SliderInt("position y", &positionY, 0, 1200);
+                ImGui::SliderInt("position x", &positionX, 0, Game::mapWidth);
+                ImGui::SliderInt("position y", &positionY, 0, Game::mapHeight);
             }
             ImGui::Spacing();
             if (ImGui::CollapsingHeader("Velocity", ImGuiTreeNodeFlags_DefaultOpen)) {

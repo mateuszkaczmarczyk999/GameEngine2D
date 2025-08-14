@@ -3,6 +3,7 @@
 
 #include "../Components/TransformComponent.hpp"
 #include "../Components/BoxColliderComponent.hpp"
+#include "../Events/CollisionEvent.hpp"
 #include <glm/glm.hpp>
 #include <vector>
 #include <SDL2/SDL.h>

@@ -44,6 +44,11 @@
 #include <string>
 #include <unordered_set>
 
+int Game::windowWidth;
+int Game::windowHeight;
+int Game::mapWidth;
+int Game::mapHeight;
+
 Game::Game() {
     isRunning = false;
     debugMode = false;
@@ -162,7 +167,7 @@ void Game::LoadMap() {
     float tileSize = 32.0;
     float tileScale = 2.0;
     int col = 0;
-    std::unordered_set<int> waterTiles{9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22};
+    std::unordered_set<int> waterTiles{21, 22};
     while (std::getline(file, line)) {
         size_t start = 0;
         size_t end = 0;
@@ -180,6 +185,7 @@ void Game::LoadMap() {
             Entity tile = registry->CreateEntity();
             tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
             tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, false, tileXOffset, tileYOffset);
+            tile.AddComponent<BoxColliderComponent>(tileSize, tileSize);
             tile.AddGroup("Tiles");
 
             if (waterTiles.find(tilePos) != waterTiles.end()) tile.AddGroup("Water");
@@ -187,8 +193,10 @@ void Game::LoadMap() {
 
             start = end + 1;
             row++;
+            mapHeight = row * tileSize * tileScale;
         }
         col++;
+        mapWidth = col * tileSize * tileScale;
     }
 
     file.close();
@@ -280,7 +288,7 @@ void Game::LoadLevel() {
 
 void Game::Setup() {
     registry->AddSystem<RenderSystem>(renderer, cameraFrame, assetStore.get());
-    registry->AddSystem<MovementSystem>();
+    registry->AddSystem<MovementSystem>(eventBus.get());
     registry->AddSystem<AnimationSystem>();
     registry->AddSystem<CollisionSystem>(eventBus.get());
     registry->AddSystem<CollisionRenderSystem>(renderer, cameraFrame, eventBus.get());
@@ -302,6 +310,7 @@ void Game::Setup() {
     registry->GetSystem<DamageSystem>().SubscribeToEvents();
     registry->GetSystem<KeyboardMovementSystem>().SubscribeToEvents();
     registry->GetSystem<ProjectileEmittingSystem>().SubscribeToEvents();
+    registry->GetSystem<MovementSystem>().SubscribeToEvents();
 }
 
 void Game::ProcessInput() {
