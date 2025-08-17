@@ -75,8 +75,8 @@ void Game::Initialize() {
 
     SDL_DisplayMode displayMode;
     SDL_GetCurrentDisplayMode(0, &displayMode);
-    windowWidth = 800; //displayMode.w;
-    windowHeight = 800; //displayMode.h;
+    windowWidth = 1100; //displayMode.w;
+    windowHeight = 1100; //displayMode.h;
     // windowWidth = displayMode.w - 50;
     // windowHeight = displayMode.h - 50;
 
@@ -164,47 +164,52 @@ void Game::LoadMap() {
     }
     std::string line;
 
+    mapHeight = 0;
+    mapHeight = 0;
     float tileSize = 32.0;
     float tileScale = 2.0;
-    int col = 0;
-    std::unordered_set<int> waterTiles{21, 22};
+    int row = 0;
+    std::unordered_set<int> waterTiles{21};
     while (std::getline(file, line)) {
         size_t start = 0;
         size_t end = 0;
-        int row = 0;
+        int col = 0;
 
         while ((end = line.find(",", start)) != std::string::npos) {
             std::string tileRef = line.substr(start, end - start);
             auto tilePos = std::stoi(tileRef);
             auto tileYOffset = (tilePos / 10) * tileSize;
             auto tileXOffset = (tilePos - (10 * (tilePos / 10))) * tileSize;
-            auto positionX = tileSize * tileScale * row;
-            auto positionY = tileSize * tileScale * col;
+            auto positionX = tileSize * tileScale * col;
+            auto positionY = tileSize * tileScale * row;
 
             Logger::Err("Tiles id: " + std::to_string(tilePos));
             Entity tile = registry->CreateEntity();
             tile.AddComponent<TransformComponent>(glm::vec2(positionX, positionY), glm::vec2(tileScale, tileScale), 0.0);
-            tile.AddComponent<SpriteComponent>("jungle", 32, 32, 0, false, tileXOffset, tileYOffset);
-            tile.AddComponent<BoxColliderComponent>(tileSize, tileSize);
+            tile.AddComponent<SpriteComponent>("jungle", tileSize, tileSize, 0, false, tileXOffset, tileYOffset);
             tile.AddGroup("Tiles");
 
-            if (waterTiles.find(tilePos) != waterTiles.end()) tile.AddGroup("Water");
-            else tile.AddGroup("Ground");
+            if (waterTiles.find(tilePos) != waterTiles.end()) {
+                tile.AddComponent<BoxColliderComponent>(tileSize * tileScale, tileSize * tileScale);
+                tile.AddGroup("Water");
+            }
+            else {
+                tile.AddGroup("Ground");
+            }
 
             start = end + 1;
-            row++;
-            mapHeight = row * tileSize * tileScale;
+            col++;
         }
-        col++;
+        row++;
         mapWidth = col * tileSize * tileScale;
     }
-
+    mapHeight = row * tileSize * tileScale;
     file.close();
 }
 
 void Game::LoadLevel() {
     Entity startBase = registry->CreateEntity();
-    startBase.AddComponent<TransformComponent>(glm::vec2(85, 85), glm::vec2(1.0, 1.0), 0.0);
+    startBase.AddComponent<TransformComponent>(glm::vec2(69, 69), glm::vec2(2.0, 2.0), 0.0);
     startBase.AddComponent<SpriteComponent>("landing-base", 32, 32);
 
     Entity chopper = registry->CreateEntity();

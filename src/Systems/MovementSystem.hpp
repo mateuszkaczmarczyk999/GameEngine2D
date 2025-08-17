@@ -40,19 +40,40 @@ public:
     void Update(double dt) {
         for (auto entity: GetSystemEntities()) {
             auto &transform = entity.GetComponent<TransformComponent>();
-            const auto &rigidBody = entity.GetComponent<RigidBodyComponent>();
+            auto &rigidBody = entity.GetComponent<RigidBodyComponent>();
 
             transform.position.x += rigidBody.velocity.x * dt;
             transform.position.y += rigidBody.velocity.y * dt;
 
-            bool entityOutsideBounds =
+            const bool enemyOutsideBounds =
                 transform.position.x >= Game::mapWidth ||
                 transform.position.x <= 0 ||
                 transform.position.y >= Game::mapHeight ||
                 transform.position.y <= 0;
+            if (enemyOutsideBounds && (entity.HasGroup("Enemies") || entity.HasGroup("Projectiles"))) entity.Kill();
 
-            if (entityOutsideBounds && (entity.HasGroup("Enemies") || entity.HasGroup("Projectiles"))) entity.Kill();
-        }
+            const int padding = 8;
+            const int spriteSize = 32;
+
+            if (entity.HasTag("Player")) {
+                if (static_cast<int>(transform.position.x + spriteSize + padding) >= Game::mapWidth) {
+                    rigidBody.velocity.x = 0;
+                    transform.position.x -= padding;
+                };
+                if (static_cast<int>(transform.position.x - padding) <= 0) {
+                    rigidBody.velocity.x = 0;
+                    transform.position.x += padding;
+                };
+                if (static_cast<int>(transform.position.y + spriteSize + padding) >= Game::mapHeight) {
+                    rigidBody.velocity.y = 0;
+                    transform.position.y -= padding;
+                };
+                if (static_cast<int>(transform.position.y - padding) <= 0) {
+                    rigidBody.velocity.y = 0;
+                    transform.position.y += padding;
+                };
+            };
+        };
     };
 private:
     EventBus* eventBus;
